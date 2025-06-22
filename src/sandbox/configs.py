@@ -37,7 +37,7 @@ class VMConfig:
 
     # ──────────────── Paths and Directories ────────────────
     root_dir: Path = Path("docker")  # Root directory for all VM resources
-    prefix: str = None  # Prefix for the shared_dir
+    suffix: str = None  # suffix for the shared_dir
     shared_dir: Path = Path("results")  # Root directory for the shared-files direcotry (host-container)
 
     # ──────────────── Other Settings ────────────────
@@ -59,10 +59,10 @@ class VMConfig:
         self.host_container_dir = self.sandboxes_dir / self.container_name
         self.host_container_data = self.host_container_dir / "data.img"
 
-        self.host_container_shared_dir = self.shared_dir / self.container_name
+        self.host_container_shared_dir = self.shared_dir
 
-        if self.prefix:
-            self.host_container_shared_dir = self.shared_dir / self.prefix / self.container_name
+        if self.suffix:
+            self.host_container_shared_dir = self.shared_dir / self.suffix
 
         # Create required directories
         for p in (
