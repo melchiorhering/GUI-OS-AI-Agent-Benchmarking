@@ -1,40 +1,83 @@
-# Spider2-V: Benchmarking Multimodal Agents in Data Science and Engineering Workflows
+# Enhancing Multimodal GUI AI-Agent Benchmarking
 
-This repository supports work on **[Spider2-V](https://spider2-v.github.io/)**, a benchmark designed to evaluate and advance multimodal agent automation in data science and engineering workflows. Spider2-V focuses on real-world applications within professional data environments, aiming to pave the way for vision-language model (VLM)-based agents to efficiently automate complex tasks across various tools and stages of the data lifecycle.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/melchiorhering/Automating-DS-DE-Workflows/blob/main/LICENSE) [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/) [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![Jupyter](https://img.shields.io/badge/Jupyter-F37626?logo=jupyter&logoColor=white)](https://jupyter.org/) [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Spaces-yellow)](https://huggingface.co/datasets/melchiorhering/vms)
 
-## Abstract
+This repository contains the source code and experimental setup for **"Enhancing Multimodal GUI AI-Agent Benchmarking,"** a modular, code-centric framework designed to improve upon the foundation of the [Spider2-V benchmark](https://spider2-v.github.io/).
 
-Data science and engineering workflows span diverse stages, from data warehousing to orchestration, utilizing tools such as BigQuery, dbt, and Airbyte. As VLMs gain sophistication in multimodal understanding and code generation, the potential for VLM-based agents to automate these workflows has grown. By generating SQL queries, Python code, and GUI operations, such agents can both enhance expert productivity and democratize large-scale data analysis.
+While powerful benchmarks like Spider2-V provide realistic tasks for evaluating AI agents, their often monolithic designs can hinder research due to poor developer experience (Dev-X), limited observability, and a lack of reproducibility. This framework, built upon the lightweight and code-centric **[Smolagents](https://github.com/huggingface/smolagents)** library, addresses these challenges directly.
 
-**Spider2-V** introduces the first multimodal agent benchmark dedicated to professional data workflows, covering:
+## 🖼️ Framework Overview
 
-- **494 tasks** derived from real-world, enterprise use cases within authentic computer environments.
-- **20 enterprise-level applications**, where tasks assess an agent's ability to perform data-centric operations, including code writing and GUI navigation.
+The proposed architecture decouples the agent's logic from the task environment. It uses a stack of modern, open-source tools to create isolated, observable, and reproducible sandboxes for the agent to operate in.
 
-The project balances realistic simulation with evaluation simplicity through:
+![Framework Overview Diagram](media/overview-framework.png)
 
-- Automatic configurations for streamlined task setup.
-- Task-specific metrics to accurately measure performance.
+## ✨ Key Features
 
-Comprehensive documentation supplements multimodal agents for these professional data applications, highlighting the challenges agents face in automating full workflows. Empirical findings reveal that existing VLM agents currently automate only 14.0% of workflows successfully. Even with guidance, these agents struggle with knowledge-intensive GUI actions (16.2% success rate) and tasks within cloud-hosted workspaces (10.6% success rate).
+This framework introduces several key improvements over the baseline implementation:
 
-## Master Thesis Goals
+-   **Powered by Smolagents:** Built on the simple, code-first Smolagents framework, enabling transparent agent logic and easy integration with the broader open-source AI ecosystem (e.g., Hugging Face).
+-   **Modular & Decoupled Architecture:** Built on **Docker**, **QEMU**, and **SSH**, the framework isolates the agent, its tools, and the sandbox environment. Components are hot-swappable, allowing for rapid iteration.
+-   **Flexible Action Space:** The agent isn't locked into rigid primitives. It can dynamically choose between **direct Python code execution** (via a Jupyter Kernel Gateway) for efficiency and **GUI automation** (`pyautogui`) for UI-specific tasks.
+-   **Rich Observability:** Gone are the days of manual debugging in VM snapshots. This framework provides:
+    -   **Live GUI Access:** Monitor the agent in real-time through any web browser using **noVNC**.
+    -   **Structured Logging:** Detailed, step-by-step logs of every action, observation, and thought process.
+    -   **Telemetry:** Compatibility with **OpenTelemetry** for exporting detailed performance metrics.
+-   **Improved Developer Experience (Dev-X):** By leveraging open standards and reducing the core Python codebase by **66%**, the framework is significantly easier to understand, maintain, and extend.
 
-The goals of this master thesis project are:
+## 🚀 Getting Started
 
-1. **Environment Setup:** Configure and deploy an updated benchmarking environment to enable better and flexible testing and evaluation of multimodal agents on the bases of the Spider2-V benchmark.
-   1. Easier integrations with LLM and data toosl
-   2. Adding a vector DB
-2. **Research Contribution:** Once the environment is operational, contribute additional features and capabilities to Spider2-V, advancing the research on automated data science and engineering workflows.
-   1. Try to improve the current scores using better implementations of the current framework or using tools/integrations
-   2. Improve Feedback loop and Agent Validation steps
+Follow these steps to set up the environment and run the benchmark.
 
-## 🛠️ Prerequisites
+### 🛠️ Prerequisites
 
-Before setting up, ensure you have the following dependencies installed:
+Ensure you have the following dependencies installed on your system:
 
-- **[Python 3.11](https://www.python.org/downloads/release/python-3110/)** - Python!
-- **[UV](https://docs.astral.sh/uv/guides/install-python/)** – A fast Python package manager.
-- **[GIT LFS](https://git-lfs.com/)** - Download large files using GIT
-- **[Direnv](https://direnv.net/)** – Manages environment variables per project.
-- **[MacTeX](https://www.tug.org/mactex/)** - For working locally with LaTex
+-   **[Python (3.12+)](https://www.python.org/downloads/)**: The core programming language.
+-   **[UV](https://github.com/astral-sh/uv)**: A fast Python package installer and resolver, used here to manage dependencies.
+-   **[Direnv](https://direnv.net/)**: A tool to manage project-specific environment variables automatically.
+-   **[Docker](https://www.docker.com/products/docker-desktop/)**: To build and manage the containerized sandbox environments.
+
+### ⚙️ Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/melchiorhering/Automating-DS-DE-Workflows.git
+    cd Automating-DS-DE-Workflows
+    ```
+
+2.  **Allow Direnv to manage the environment:**
+    ```bash
+    direnv allow
+    ```
+    This will automatically create a virtual environment for you based on the `.envrc` file.
+
+3.  **Install Python dependencies with UV:**
+    ```bash
+    uv sync
+    ```
+    This command reads the `requirements.lock` file and installs the exact versions of all necessary packages into your virtual environment.
+
+## 📈 Usage
+
+### Running the Benchmark Orchestrator
+
+The main entry point for running experiments is the orchestrator script. You can run all tasks sequentially or a specific subset.
+
+```bash
+# Example: Run all tasks defined in the jupyter test index sequentially
+uv run python src/orchestrator.py \
+    --task-index /path/to/your/task_list.json \
+    --tasks-root /path/to/your/task_definitions/ \
+    --results-root /path/to/your/output_directory
+```
+
+Results, logs, and other artifacts for each task run will be saved to the `results/` directory.
+
+### Analyzing Results
+
+The repository includes Python scripts and notebooks to process the generated `summary.json` files, calculate aggregate metrics, and create plots to visualize the results.
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
