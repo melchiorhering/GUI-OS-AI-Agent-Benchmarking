@@ -59,21 +59,30 @@ Ensure you have the following dependencies installed on your system:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/melchiorhering/Automating-DS-DE-Workflows.git
+    git clone [https://github.com/melchiorhering/Automating-DS-DE-Workflows.git](https://github.com/melchiorhering/Automating-DS-DE-Workflows.git)
     cd Automating-DS-DE-Workflows
     ```
 
-2.  **Allow Direnv to manage the environment:**
+2.  **Prepare the Sandbox OS Image:**
+    This framework requires a configured QEMU virtual machine image to serve as the agent's sandbox. You have two options to set this up:
+
+    -   **Option A (Recommended):** Download a pre-configured image directly from the [Hugging Face Hub](https://huggingface.co/datasets/melchiorhering/vms). Place the downloaded `ubuntu-base` directory inside the `src/docker/vms/` folder.
+        -   Use Git submodules to sync the OS image files in the this repository
+        -   Use the python script in `src/docker` to download the files.
+
+    -   **Option B (Advanced):** Build the OS image from scratch. The necessary scripts are provided for Linux-based systems in the `src/docker/` directory. Please follow the instructions in the `README.md` file within that directory.
+
+3.  **Allow Direnv to manage the environment:**
     ```bash
     direnv allow
     ```
-    This will automatically create a virtual environment for you based on the `.envrc` file.
+    This will automatically create a virtual environment for you based on the `.envrc.example` file.
 
-3.  **Install Python dependencies with UV:**
+4.  **Install Python dependencies with UV:**
     ```bash
     uv sync
     ```
-    This command reads the `requirements.lock` file and installs the exact versions of all necessary packages into your virtual environment.
+    This command reads the `pyproject.toml` file and syncs the project environment for you.
 
 ## 📈 Usage
 
