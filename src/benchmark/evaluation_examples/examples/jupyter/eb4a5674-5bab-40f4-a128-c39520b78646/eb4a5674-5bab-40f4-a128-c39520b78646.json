@@ -1,0 +1,36 @@
+{
+  "id": "eb4a5674-5bab-40f4-a128-c39520b78646",
+  "snapshot": "jupyter",
+  "instruction": "I want to combine the content of the code in all the code cells of this opened ipynb file. Please create a new file named code_content.txt on the desktop and save the code to that file. Do NOT keep the content in the Markdown cells.",
+  "source": [
+    "https://jorgepit-14189.medium.com/how-to-get-the-history-of-the-commands-and-their-outputs-in-jupyter-notebook-7cce32c710e4"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["gui", "traditional_data_processing", "abstract"],
+  "action_number": 9,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "numpy_problem.ipynb",
+        "remote_path": "/home/user/Desktop/numpy_problem.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_text_file",
+    "arguments": {
+      "local_expected_file": "code_content_gold.txt",
+      "vm_result_file": "/home/user/Desktop/code_content.txt",
+      "ignore_blanks": true
+    }
+  },
+  "counterpart": "224009fd-5d6b-460e-9dbc-abdb2e9d6676"
+}

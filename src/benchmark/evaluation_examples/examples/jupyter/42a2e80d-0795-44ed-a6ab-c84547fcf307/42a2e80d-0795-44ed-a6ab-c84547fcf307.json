@@ -1,0 +1,49 @@
+{
+  "id": "42a2e80d-0795-44ed-a6ab-c84547fcf307",
+  "snapshot": "jupyter",
+  "instruction": "I have completed notebook_1. Please help me add the contents of notebook_2 on the desktop to the back of notebook_1 and run them all.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nYou need to add the contents of notebook_2 to the end of notebook_1 and then run the combined notebook. In VS Code, you can do this with standard copy and paste commands. In detail:\n1. In the VS Code File Explorer on the left, double-click to open both `notebook_1.ipynb` and `notebook_2.ipynb`. They will open in separate editor tabs.\n2. Go to the `notebook_2.ipynb` tab, which contains the cells you want to copy.\n3. Select all the cells in this notebook. The easiest way is to click on the first cell to give it focus, and then press the keyboard shortcut `Ctrl+A`.\n4. Copy all the selected cells by pressing `Ctrl+C`.\n5. Now, switch to the `notebook_1.ipynb` tab.\n6. Scroll to the bottom of this notebook and click on the last cell to select it.\n7. Paste the cells you copied by pressing `Ctrl+V`. The cells from `notebook_2` will now appear at the end of `notebook_1`.\n8. To execute the entire merged notebook, click the **\"Run All\"** icon (it looks like a double play symbol) in the notebook's top toolbar.\n9. After all cells have finished running, save the modified `notebook_1.ipynb` by pressing `Ctrl+S`.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://github.com/ozlerhakan/datacamp/tree/master/Working%20with%20Categorical%20Data%20in%20Python"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 7,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "adult.csv",
+        "remote_path": "/home/user/Desktop/adult.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook_1.ipynb",
+        "remote_path": "/home/user/Desktop/notebook_1.ipynb"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook_2.ipynb",
+        "remote_path": "/home/user/Desktop/notebook_2.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "notebook_1.ipynb",
+      "vm_result": "/home/user/Desktop/notebook_gold.ipynb"
+    }
+  },
+  "counterpart": "58013f69-4764-4c9b-972f-5db3010595d2"
+}

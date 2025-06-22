@@ -1,0 +1,43 @@
+{
+  "id": "279a4290-d744-4cc1-a576-bc4f7b9fcee9",
+  "snapshot": "jupyter",
+  "instruction": "Refer to the existing figure and help me make a similar figure for the H/A/N column. The format must be the same. And save the result in 'result.png'.",
+  "source": [
+    "https://www.kaggle.com/code/mayankanand2701/rohit-sharma-all-centuries-notebook"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 8,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "Rohit_Sharma_Centuries.csv",
+        "remote_path": "/home/user/Desktop/Rohit_Sharma_Centuries.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+
+  "evaluation": {
+    "func": "compare_jupyterlab_images",
+    "arguments": {
+      "local_expected_image": "gold.png",
+      "vm_result_image": "/home/user/Desktop/result.png"
+    }
+  },
+  "counterpart": "b5bed2ba-186a-4603-8705-083ad308c8c1"
+}

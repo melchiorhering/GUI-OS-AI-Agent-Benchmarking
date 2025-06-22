@@ -1,0 +1,35 @@
+{
+  "id": "6e8e092e-a3cc-4812-8ab9-65cb9f161d4b",
+  "snapshot": "jupyter",
+  "instruction": "I have finished editing this jupyter notebook file. Please help me save this opened file as submission.ipynb on the Desktop.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nTo finish this task, follow the steps below:\n\n1. In the VSCode interface, on the left side panel right click on the opened file sports-products.ipynb.\n2. Click Rename.\n3. Rename the file as submission.ipynb.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://jupyterlab.readthedocs.io/en/4.1.x/user/files.html#uploading-and-downloading"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["gui", "traditional_data_processing", "verbose"],
+  "action_number": 5,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "sports.zip",
+        "remote_path": "/home/user/Desktop/sports.zip"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_ipynb_files",
+    "arguments": {
+      "vm_result": "/home/user/Desktop/submission.ipynb",
+      "local_expected": "submission_gold.ipynb"
+    }
+  },
+  "counterpart": "8259543a-9c3f-4cb4-8b9c-2f44f876869c"
+}

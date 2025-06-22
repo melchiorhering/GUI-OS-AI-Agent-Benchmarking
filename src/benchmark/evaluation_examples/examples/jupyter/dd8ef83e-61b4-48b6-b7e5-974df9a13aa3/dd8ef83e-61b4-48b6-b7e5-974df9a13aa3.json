@@ -1,0 +1,71 @@
+{
+  "id": "dd8ef83e-61b4-48b6-b7e5-974df9a13aa3",
+  "snapshot": "jupyter",
+  "instruction": "Display the number of films in each category, sorted in descending order\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nDisplay the number of films in each category, sorted in descending order, using a VS Code notebook. In detail:\n1.  In the VS Code File Explorer on the left, you can double-click the various CSV files (`result.csv`, `category.csv`, `film.csv`, etc.) to preview them.\n2.  Double-click the `notebook.ipynb` file to open it in the editor.\n3.  Scroll to the bottom of the notebook. Hover your mouse below the last cell and click the **\"+ Code\"** button that appears to add a new, empty cell.\n4.  Copy the entire Python code block below and paste it into this single new cell. This script loads all the data, creates a database, runs the query, and saves the result.\n    ```python\n    import pandas as pd\n    import sqlite3\n\n    # Load data from CSV files\n    film_actor = pd.read_csv('./film_actor.csv')\n    film_category = pd.read_csv('./film_category.csv')\n    film = pd.read_csv('./film.csv')\n    category = pd.read_csv('./category.csv')\n\n    # Connect to a database and write the dataframes to SQL tables\n    connection = sqlite3.connect('database.db')\n    film_actor.to_sql('film_actor', connection, if_exists='replace', index=False)\n    film_category.to_sql('film_category', connection, if_exists='replace', index=False)\n    film.to_sql('film', connection, if_exists='replace', index=False)\n    category.to_sql('category', connection, if_exists='replace', index=False)\n\n    # Build the query to count the number of films per category\n    query = \"\"\"\n    SELECT\n        c.name,\n        COUNT(fc.film_id) AS films_in_category\n    FROM\n        category c\n        LEFT JOIN film_category fc ON c.category_id = fc.category_id\n    GROUP BY\n        c.category_id\n    ORDER BY\n        films_in_category DESC;\n    \"\"\"\n\n    # Execute the query and save the result to a CSV\n    df = pd.read_sql_query(query, connection)\n    df.to_csv('result.csv', index=False)\n    connection.close()\n\n    # Also display the final DataFrame in the notebook output\n    print(\"Query finished. Data saved to result.csv.\")\n    df\n    ```\n5.  After pasting the code, execute the entire notebook to ensure any existing setup cells and your new cell are run correctly. Click the **\"Run All\"** icon (it looks like a double play symbol) in the notebook's top toolbar.\n6.  Wait for the execution to complete. The `result.csv` file in the File Explorer will be updated with the film counts, and the result will also be displayed in the notebook's output.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://www.kaggle.com/code/kapturovalexander/sql-postgresql-for-data-science"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 11,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "category.csv",
+        "remote_path": "/home/user/Desktop/category.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "film_actor.csv",
+        "remote_path": "/home/user/Desktop/film_actor.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "film_category.csv",
+        "remote_path": "/home/user/Desktop/film_category.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "film.csv",
+        "remote_path": "/home/user/Desktop/film.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "result.csv",
+        "remote_path": "/home/user/Desktop/result.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_csv",
+    "arguments": {
+      "local_expected": "gold.csv",
+      "vm_result": "/home/user/Desktop/result.csv",
+      "ignore_order": true
+    }
+  },
+  "counterpart": "de41e397-4e76-450f-ae98-e2a7dd9a6382"
+}

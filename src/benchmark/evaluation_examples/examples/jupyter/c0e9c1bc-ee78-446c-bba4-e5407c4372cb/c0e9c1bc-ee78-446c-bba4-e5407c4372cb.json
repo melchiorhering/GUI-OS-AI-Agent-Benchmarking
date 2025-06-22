@@ -1,0 +1,32 @@
+{
+  "id": "c0e9c1bc-ee78-446c-bba4-e5407c4372cb",
+  "snapshot": "jupyter",
+  "instruction": "I want to delete the jupyter notebook kernel \"jupyter-kernel\", please help me.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nThis task is to remove the kernel on a Jupyter Notebook. You need to:\n1. In the opened terminal, use the following command to remove the jupyter kernel:\n```\njupyter kernelspec remove jupyter-kernel\n```\n2. Type in \"y\" to confirm the remove action.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://stackoverflow.com/questions/42635310/remove-the-kernel-on-a-jupyter-notebook"
+  ],
+  "related_apps": ["jupyter", "terminal"],
+  "tags": ["cli", "traditional_data_processing", "verbose"],
+  "action_number": 2,
+  "config": [
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_script_logs",
+    "arguments": {
+      "eval_script": "eval.sh",
+      "vm_eval_logs": "/home/user/eval.log",
+      "rules": {
+        "include": ["python3"],
+        "exclude": ["jupyter-kernel"]
+      }
+    }
+  },
+  "counterpart": "2ed53418-f813-479f-b8a0-134bfebec393"
+}

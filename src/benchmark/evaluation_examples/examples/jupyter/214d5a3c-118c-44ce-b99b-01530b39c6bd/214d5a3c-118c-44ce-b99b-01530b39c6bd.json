@@ -1,0 +1,57 @@
+{
+  "id": "214d5a3c-118c-44ce-b99b-01530b39c6bd",
+  "snapshot": "jupyter",
+  "instruction": "Analyze the average number of hours worked per week for different groups, based firstly on their education level and secondly on their income category in a new cell of the Jupyter notebook \"Categorical-Data.ipynb\". Complete the code and run all the code.",
+  "source": [
+    "https://github.com/ozlerhakan/datacamp/tree/master/Working%20with%20Categorical%20Data%20in%20Python"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 7,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "adult.csv",
+        "remote_path": "/home/user/Desktop/adult.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "Categorical-Data.ipynb",
+        "remote_path": "/home/user/Desktop/Categorical-Data.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "evaluate_multiple_notebooks",
+    "arguments": {
+      "operator": "or",
+      "comparisons": [
+        {
+          "func": "compare_notebook_cells",
+          "arguments": {
+            "local_expected": "Categorical-Data_gold.ipynb",
+            "vm_result": "/home/user/Desktop/Categorical-Data.ipynb"
+          }
+        },
+        {
+          "func": "compare_notebook_outputs",
+          "arguments": {
+            "local_expected": "Categorical-Data_gold1.ipynb",
+            "vm_result": "/home/user/Desktop/Categorical-Data.ipynb"
+          }
+        }
+      ]
+    }
+  },
+  "counterpart": "40f8424e-a7dd-47ac-a397-47d5e4ca5a2d"
+}

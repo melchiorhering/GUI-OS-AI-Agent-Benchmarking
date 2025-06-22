@@ -1,0 +1,35 @@
+{
+  "id": "e316bdce-f76f-4a08-8239-865e55483396",
+  "snapshot": "jupyter",
+  "instruction": "This is a jupyter notebook that has been run and I want to clear all its output. Please help me with this task.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nThis task is to clear all outputs in the current jupyter notebook within the VS Code interface.\n1.  In the opened notebook, locate the main notebook toolbar which is at the top of the editor pane.\n2.  In this toolbar, look for the **\"Clear All Outputs\"** icon. It typically looks like a document with an 'X' or a sparkle on it, and is usually located near the \"Run All\" and \"Restart\" icons.\n3.  Click the **\"Clear All Outputs\"** icon.\n4.  All output below the code cells, such as tables and plots, will be immediately removed from the notebook.\n5.  To save the notebook in its cleared state, press the keyboard shortcut `Ctrl+S`.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://www.geeksforgeeks.org/keyboard-shortcuts-to-clear-cell-output-in-jupyter-notebook/"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["gui", "traditional_data_processing", "verbose"],
+  "action_number": 3,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "linear_regression.ipynb",
+        "remote_path": "/home/user/Desktop/linear_regression.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "are_jupyter_outputs_cleared",
+    "arguments": {
+      "vm_result": "/home/user/Desktop/linear_regression.ipynb",
+      "expected": []
+    }
+  },
+  "counterpart": "575a50fd-5608-4d68-897f-256478a2d0f1"
+}

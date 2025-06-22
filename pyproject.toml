@@ -1,0 +1,75 @@
+[project]
+name = "master-thesis"
+version = "0.1.0"
+description = "Master thesis project: Automating (Data Science & Engineering) Workflows with AI"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pillow",
+    "ipykernel",
+    "ipywidgets",
+    "docker",
+    "paramiko",
+    "pynput",
+    "tenacity",
+    "pandas",
+    "websocket-client",
+    "huggingface-hub[cli]",
+    "num2words",
+    "litellm",
+    "nbformat",
+    "scikit-image",
+    "scikit-learn",
+    "formulas",
+    "lxml",
+    "rapidfuzz",
+    "smolagents[litellm,telemetry,toolkit]==1.18.0",
+    "opencv-python",
+    "ruff",
+    "torch>=2.7.1",
+    "torchvision>=0.22.1",
+    "torchaudio>=2.7.1",
+    "transformers==4.51.3",
+    "accelerate>=1.7.0",
+    "qwen-vl-utils==0.0.8",
+    "datasets>=3.6.0",
+    "nbconvert>=7.16.6",
+    "numpy>=2.3.0",
+    "matplotlib>=3.10.3",
+    "seaborn>=0.13.2",
+    "scipy>=1.15.3",
+    "flash-attn>=2.8.0.post2",
+    "statsmodels>=0.14.4",
+]
+
+
+[tool.ruff]
+# In addition to the standard set of inclusions, include `.pyw` files.
+extend-include = ["*.ipynb"]
+
+
+line-length = 120
+lint.select = [
+    "E", # pycodestyle errors (settings from FastAPI, thanks, @tiangolo!)
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "I", # isort
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
+]
+lint.ignore = [
+    "E501", # line too long, handled by black
+    "C901", # too complex
+]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+docstring-code-format = true

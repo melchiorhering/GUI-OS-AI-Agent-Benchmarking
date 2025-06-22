@@ -1,0 +1,94 @@
+{
+  "id": "a4773fa9-c715-4293-8774-e99caa9d8e7c",
+  "snapshot": "jupyter",
+  "instruction": "I want to see 2019 products with an above average price, show results in result.csv",
+  "source": [
+    "https://www.kaggle.com/code/dillonmyrick/sql-beginner-to-advanced-with-practical-examples/notebook"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 11,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "categories.csv",
+        "remote_path": "/home/user/Desktop/categories.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "customers.csv",
+        "remote_path": "/home/user/Desktop/customers.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "result.csv",
+        "remote_path": "/home/user/Desktop/result.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "order_items.csv",
+        "remote_path": "/home/user/Desktop/order_items.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "orders.csv",
+        "remote_path": "/home/user/Desktop/orders.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "products.csv",
+        "remote_path": "/home/user/Desktop/products.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "stocks.csv",
+        "remote_path": "/home/user/Desktop/stocks.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "stores.csv",
+        "remote_path": "/home/user/Desktop/stores.csv"
+      }
+    },
+    {
+      "type": "upload_script_and_execute",
+      "parameters": {
+        "src": "init.sh",
+        "dest": "/home/user/init.sh"
+      }
+    }
+  ],
+
+  "evaluation": {
+    "func": "compare_csv",
+    "arguments": {
+      "local_expected": "gold.csv",
+      "vm_result": "/home/user/Desktop/result.csv",
+      "ignore_order": true
+    }
+  },
+
+  "counterpart": "7c0dee43-ab20-4fad-8310-f3bafc25c034"
+}

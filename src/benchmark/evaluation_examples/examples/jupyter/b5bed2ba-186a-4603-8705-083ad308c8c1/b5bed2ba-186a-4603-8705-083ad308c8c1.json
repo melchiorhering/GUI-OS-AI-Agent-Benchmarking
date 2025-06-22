@@ -1,0 +1,42 @@
+{
+  "id": "b5bed2ba-186a-4603-8705-083ad308c8c1",
+  "snapshot": "jupyter",
+  "instruction": "Refer to the existing figure and help me make a similar figure for the H/A/N column in a VS Code notebook. The format must be the same, and the result must be saved as 'result.png'.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nYou need to refer to the existing figure and help me make a similar figure for the H/A/N column. The format must be the same. In detail:\n1. First, run the entire notebook to generate the initial figures for reference. In the notebook's top toolbar, click the \"Restart\" icon (a circular arrow).\n2. In the pop-up window, confirm by clicking \"Restart\".\n3. Now, click the \"Run All\" icon (a double play symbol) in the toolbar. This will execute all cells from top to bottom.\n4. After the execution finishes, you will see the figures that have been drawn. Scroll through them to understand the existing data and plot styling.\n5. Scroll down to the very bottom of the notebook.\n6. Hover your mouse below the last cell, and click the \"+ Code\" button that appears to add a new, empty code cell.\n7. Copy the code below and paste it into this new cell:\n```python\nimport seaborn as sns\nimport matplotlib.pyplot as plt\n\n# This assumes the DataFrame 'df' is loaded in the cells above.\nsns.countplot(data=df,x=\"H/A/N\",order=df[\"H/A/N\"].value_counts().index)\nplt.xticks(rotation=90)\nplt.savefig('result.png')\nplt.show()\n```\n8. To run only this new cell, click the \"Execute Cell\" icon (a play symbol) that is on the left side of the cell. The new chart will appear in the output, and a 'result.png' file will be created in the VS Code File Explorer.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://www.kaggle.com/code/mayankanand2701/rohit-sharma-all-centuries-notebook"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 8,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "Rohit_Sharma_Centuries.csv",
+        "remote_path": "/home/user/Desktop/Rohit_Sharma_Centuries.csv"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_jupyterlab_images",
+    "arguments": {
+      "local_expected_image": "gold.png",
+      "vm_result_image": "/home/user/Desktop/result.png"
+    }
+  },
+  "counterpart": "279a4290-d744-4cc1-a576-bc4f7b9fcee9"
+}

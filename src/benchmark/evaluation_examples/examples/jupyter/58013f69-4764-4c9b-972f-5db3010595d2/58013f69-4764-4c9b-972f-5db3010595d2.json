@@ -1,0 +1,49 @@
+{
+  "id": "58013f69-4764-4c9b-972f-5db3010595d2",
+  "snapshot": "jupyter",
+  "instruction": "I have completed notebook_1. Please help me add the contents of notebook_2 on the desktop to the back of notebook_1 and run them all.",
+  "source": [
+    "https://github.com/ozlerhakan/datacamp/tree/master/Working%20with%20Categorical%20Data%20in%20Python"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 7,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "adult.csv",
+        "remote_path": "/home/user/Desktop/adult.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook_1.ipynb",
+        "remote_path": "/home/user/Desktop/notebook_1.ipynb"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook_2.ipynb",
+        "remote_path": "/home/user/Desktop/notebook_2.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "notebook_1.ipynb",
+      "vm_result": "/home/user/Desktop/notebook_gold.ipynb"
+    }
+  },
+  "counterpart": "42a2e80d-0795-44ed-a6ab-c84547fcf307"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "224009fd-5d6b-460e-9dbc-abdb2e9d6676",
+  "snapshot": "jupyter",
+  "instruction": "I want to combine the content of the code in all the code cells of this opened ipynb file. Please create a new file named code_content.txt on the desktop and save the code to that file. Do NOT keep the content in the Markdown cells.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nThis task is to combine the content of all the code cells from a VS Code notebook into a single text file.\n1.  First, in the opened `notebook.ipynb` file, scroll to the bottom. Hover your mouse below the last cell and click the **\"+ Code\"** button to add a new cell.\n2.  Copy the code below and paste it into this new cell. This code will write the history of all code run in the session to a file.\n    ```python\n    with open('code_content.txt', 'w') as file:\n        file.write('\\n'.join(In))\n    ```\n3.  Now, run the entire notebook to ensure all previous cells and this new cell are executed. In the notebook's top toolbar, click the **\"Run All\"** icon (a double play symbol).\n4.  Wait for the execution to finish. A new file named `code_content.txt` will appear in the VS Code File Explorer on the left.\n5.  Double-click the `code_content.txt` file to open it in a new editor tab.\n6.  This file contains all the code, including the script you just added to create it. You need to remove that part. Scroll to the bottom of the file and delete the following lines:\n    ```\n    with open('code_content.txt', 'w') as file:\n        file.write('\\n'.join(In))\n    ```\n7.  After deleting the lines, save the cleaned file by pressing the keyboard shortcut `Ctrl+S`.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://jorgepit-14189.medium.com/how-to-get-the-history-of-the-commands-and-their-outputs-in-jupyter-notebook-7cce32c710e4"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["gui", "traditional_data_processing", "verbose"],
+  "action_number": 9,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "numpy_problem.ipynb",
+        "remote_path": "/home/user/Desktop/numpy_problem.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_text_file",
+    "arguments": {
+      "local_expected_file": "code_content_gold.txt",
+      "vm_result_file": "/home/user/Desktop/code_content.txt",
+      "ignore_blanks": true
+    }
+  },
+  "counterpart": "eb4a5674-5bab-40f4-a128-c39520b78646"
+}

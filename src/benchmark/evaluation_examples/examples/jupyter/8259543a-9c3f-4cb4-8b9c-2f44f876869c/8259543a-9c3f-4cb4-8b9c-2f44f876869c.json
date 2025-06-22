@@ -1,0 +1,35 @@
+{
+  "id": "8259543a-9c3f-4cb4-8b9c-2f44f876869c",
+  "snapshot": "jupyter",
+  "instruction": "I have finished editing this notebook in VSCode. Please help me save this opened file as submission.ipynb on the Desktop.",
+  "source": [
+    "https://jupyterlab.readthedocs.io/en/4.1.x/user/files.html#uploading-and-downloading"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["gui", "traditional_data_processing", "abstract"],
+  "action_number": 5,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "sports.zip",
+        "remote_path": "/home/user/sports.zip"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_ipynb_files",
+    "arguments": {
+      "vm_result": "/home/user/Desktop/submission.ipynb",
+      "local_expected": "submission_gold.ipynb"
+    }
+  },
+  "counterpart": "6e8e092e-a3cc-4812-8ab9-65cb9f161d4b"
+}

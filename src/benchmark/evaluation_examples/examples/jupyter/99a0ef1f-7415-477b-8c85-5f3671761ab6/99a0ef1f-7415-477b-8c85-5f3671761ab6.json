@@ -1,0 +1,42 @@
+{
+  "id": "99a0ef1f-7415-477b-8c85-5f3671761ab6",
+  "snapshot": "jupyter",
+  "instruction": "Help me build a Decision Tree model to classify the onset of diabetes based on different diagnostic measures. Add codes only to the existing cells, and in the end run all the cells and save the jupyter notebook.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nThis task requires you to build a Decision Tree model to classify the onset of diabetes based on different diagnostic measures in a VS Code notebook.\n1.  **Complete #TODO 1:** Locate the first `#TODO` comment. In that cell, add the following two lines to define your feature matrix (X) and target vector (y) from the `pima` DataFrame.\n    ```python\n    X = pima[feature_cols]\n    y = pima.label\n    ```\n2.  **Complete #TODO 2:** Find the second `#TODO` comment. In this section, you will build, train, and test the model. Add the following three lines of code in the specified cell:\n    ```python\n    # First, instantiate a decision tree model.\n    clf = DecisionTreeClassifier(random_state=SEED)\n    \n    # Then, fit the decision tree model.\n    clf = clf.fit(X_train,y_train)\n    \n    # Finally, predict the response for the test dataset.\n    y_pred = clf.predict(X_test)\n    ```\n3.  **Run the Notebook:** After you have added all the necessary code, execute the entire notebook to train the model and see the results. Click the **\"Run All\"** icon (it looks like a double play symbol) in the notebook's top toolbar.\n4.  **Save the File:** Once all the cells have completed running, save your finished notebook by pressing the keyboard shortcut `Ctrl+S`.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://www.datacamp.com/tutorial/decision-tree-classification-python"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 8,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "diabetes.csv",
+        "remote_path": "/home/user/Desktop/diabetes.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "decision_tree.ipynb",
+        "remote_path": "/home/user/Desktop/decision_tree.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "decision_tree_gold.ipynb",
+      "vm_result": "/home/user/Desktop/decision_tree.ipynb"
+    }
+  },
+  "counterpart": "5085517b-69e9-467a-897b-21b8fd926bde"
+}

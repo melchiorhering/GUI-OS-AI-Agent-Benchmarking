@@ -1,0 +1,36 @@
+{
+  "id": "a2a9b12c-c428-4673-a9c2-38c24d1c7eef",
+  "snapshot": "jupyter",
+  "instruction": "Help me create a new jupyter notebook named tensor.ipynb in the current VSCode UI and copy the code in the script.py file on the desktop to this new notebook. Note that all code should be in one cell and you don't need to run it.",
+  "source": [
+    "https://jupyterlab.readthedocs.io/en/4.1.x/user/files.html#creating-files-and-activities"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["gui", "traditional_data_processing", "abstract"],
+  "action_number": 7,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "script.py",
+        "remote_path": "/home/user/Desktop/script.py"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_cells",
+    "arguments": {
+      "local_expected": "tensor_gold.ipynb",
+      "vm_result": "/home/user/Desktop/tensor.ipynb"
+    }
+  },
+
+  "counterpart": "1f16fbd5-cdf3-4cb2-b02b-9c31f11cc77d"
+}

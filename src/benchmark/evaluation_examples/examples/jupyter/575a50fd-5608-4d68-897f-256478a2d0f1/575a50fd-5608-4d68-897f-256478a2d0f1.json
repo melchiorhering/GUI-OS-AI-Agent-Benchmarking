@@ -1,0 +1,35 @@
+{
+  "id": "575a50fd-5608-4d68-897f-256478a2d0f1",
+  "snapshot": "jupyter",
+  "instruction": "This is a jupyter notebook that has been run and I want to clear all its output. Please help me with this task.",
+  "source": [
+    "https://www.geeksforgeeks.org/keyboard-shortcuts-to-clear-cell-output-in-jupyter-notebook/"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["gui", "traditional_data_processing", "abstract"],
+  "action_number": 3,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "linear_regression.ipynb",
+        "remote_path": "/home/user/Desktop/linear_regression.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "are_jupyter_outputs_cleared",
+    "arguments": {
+      "vm_result": "/home/user/Desktop/linear_regression.ipynb",
+      "expected": []
+    }
+  },
+  "counterpart": "e316bdce-f76f-4a08-8239-865e55483396"
+}

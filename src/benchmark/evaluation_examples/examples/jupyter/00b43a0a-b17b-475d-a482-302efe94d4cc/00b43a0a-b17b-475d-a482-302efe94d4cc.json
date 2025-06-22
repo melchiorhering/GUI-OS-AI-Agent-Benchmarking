@@ -1,0 +1,57 @@
+{
+  "id": "00b43a0a-b17b-475d-a482-302efe94d4cc",
+  "snapshot": "jupyter",
+  "instruction": "Determine the total number of Games held for both the Summer and Winter Olympics, and record this information in 'allGames.csv' using a VS Code notebook.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nDetermine the total number of Games held for both the Summer and Winter Olympics, and record this information in \"allGames.csv\". In detail:\n1. First, in the VS Code File Explorer on the left, you can double-click the CSV files (`allGames.csv`, `Athletes_summer_games.csv`, and `Athletes_winter_games.csv`) to preview their contents in new tabs.\n2. Double-click the `notebook.ipynb` file to open it in the VS Code notebook editor.\n3. To ensure all necessary data (like the summer games DataFrame) is loaded into memory, click the \"Run All\" button (looks like a double play icon) in the notebook's top toolbar. Wait for the cells to finish executing.\n4. Scroll down to the bottom of the notebook. Hover your mouse below the last existing cell and click the \"+ Code\" button to add a new cell.\n5. Copy the code below and paste it into this new cell. This code will load the winter games data, calculate the unique game counts for both seasons, and save the result.\n```python\n# This assumes the 'df_summer' DataFrame was loaded by the cells above.\ndf_winter = pd.read_csv('./Athletes_winter_games.csv')\n\n# Create a new DataFrame to store our results\ntotal_games = pd.DataFrame(columns=['Total # of Games'])\n\n# Calculate the number of unique games for each season\ntotal_games.loc['Winter'] = len(df_winter['Games'].drop_duplicates())\ntotal_games.loc['Summer'] = len(df_summer['Games'].drop_duplicates())\n\n# Format the DataFrame for saving\ntotal_games = total_games.reset_index().rename(columns={'index':'Season'})\n\n# Save the final data to the target CSV file\ntotal_games.to_csv('./allGames.csv', index=False)\n\n# Also display the resulting table in the notebook output\nprint(\"Query finished. Data saved to allGames.csv\")\ntotal_games\n```\n6. Click the \"Execute Cell\" icon (a play symbol) on the left side of the new cell to run it.\n7. After the cell finishes running, click on the `allGames.csv` tab in VS Code. It will automatically refresh to show the newly calculated totals for the Winter and Summer games.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://www.kaggle.com/datasets/nitishsharma01/olympics-124-years-datasettill-2020/code"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 7,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "Athletes_summer_games.csv",
+        "remote_path": "/home/user/Desktop/Athletes_summer_games.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "Athletes_winter_games.csv",
+        "remote_path": "/home/user/Desktop/Athletes_winter_games.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "allGames.csv",
+        "remote_path": "/home/user/Desktop/allGames.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_csv",
+    "arguments": {
+      "local_expected": "gold.csv",
+      "vm_result": "/home/user/Desktop/allGames.csv",
+      "ignore_order": true
+    }
+  },
+  "counterpart": "cad93c85-d12d-4ba3-83d7-ba4e3ec3bfcc"
+}

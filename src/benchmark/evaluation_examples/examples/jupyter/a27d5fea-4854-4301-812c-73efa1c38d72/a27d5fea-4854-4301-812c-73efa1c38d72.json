@@ -1,0 +1,50 @@
+{
+  "id": "a27d5fea-4854-4301-812c-73efa1c38d72",
+  "snapshot": "jupyter",
+  "instruction": "Display the 10 actors whose films rented the most, sorted in descending order, using a VS Code notebook.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nDisplay the number of films in each category, sorted in descending order. In detail:\n1. In the VS Code File Explorer on the left, double-click the `result.csv` file to open it and see the predefined format in a new tab.\n2. Double-click the `notebook.ipynb` file to open it in the VS Code notebook editor.\n3. Scroll down to the bottom of the notebook. A button to add a new cell will appear as you hover below the last cell.\n4. Click the \"+ Code\" button to add a new, empty code cell at the end of the notebook.\n5. Copy the Python and SQL code block below and paste it into this new cell:\n```python\nimport sqlite3\nimport pandas as pd\n\nconnection = sqlite3.connect('database.db')\n\nquery = \"\"\"\nSELECT\n    a.actor_id,\n    a.first_name,\n    a.last_name,\n    COUNT(r.rental_id) AS rented_times\nFROM\n    actor a\n    LEFT JOIN film_actor fa ON a.actor_id = fa.actor_id\n    LEFT JOIN film f ON fa.film_id = f.film_id\n    LEFT JOIN inventory i ON f.film_id = i.film_id\n    LEFT JOIN rental r ON i.inventory_id = r.inventory_id\nGROUP BY\n    a.actor_id\nORDER BY\n    rented_times DESC\nLIMIT\n    10;\n\"\"\"\n\ndf = pd.read_sql_query(query, connection)\ndf.to_csv('result.csv', index=False)\n\n# Display the resulting DataFrame in the notebook output as well\nprint(\"Query finished. Data saved to result.csv. Displaying top 10 actors:\")\ndf\n```\n6. In the notebook's top toolbar, click the \"Run All\" button (it looks like a double play icon).\n7. Wait a few moments for all the cells to execute. The new data will be saved to `result.csv`.\n8. You can switch back to the already opened `result.csv` tab in VS Code. It will automatically refresh to show the new data, displaying the top 10 actors.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://www.kaggle.com/code/kapturovalexander/sql-postgresql-for-data-science"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 8,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "database.db",
+        "remote_path": "/home/user/Desktop/database.db"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "result.csv",
+        "remote_path": "/home/user/Desktop/result.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_csv",
+    "arguments": {
+      "local_expected": "gold.csv",
+      "vm_result": "/home/user/Desktop/result.csv",
+      "ignore_order": true
+    }
+  },
+  "counterpart": "b09a0441-20b3-45f1-966a-4d521e46c7ea"
+}

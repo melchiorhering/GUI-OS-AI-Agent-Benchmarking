@@ -1,0 +1,35 @@
+{
+  "id": "4f9794ae-d508-416f-af3b-10e449ebd083",
+  "snapshot": "jupyter",
+  "instruction": "Help me run all cells in this jupyter notebook. I hope to check the results.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nTo run all cells in a jupyter notebook, one method is to run each cell one-by-one. Another simple method is to run all cells using one operation. To achieve this:\n1. In the opened VSCode interface, firstly locate and click the button \"Run All\" in the menu bar on the top.\n2. Wait for a short time and all cells should be executed.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://jupyterlab.readthedocs.io/en/latest/user/code_console.html"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["gui", "traditional_data_processing", "verbose"],
+  "action_number": 3,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "sports.zip",
+        "remote_path": "/home/user/Desktop/sports.zip"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "is_jupyter_cell_executed",
+    "arguments": {
+      "vm_result": "/home/user/Desktop/sports-products.ipynb",
+      "expected": []
+    }
+  },
+  "counterpart": "8ecc0ac2-3083-4be0-ace9-43079288d717"
+}

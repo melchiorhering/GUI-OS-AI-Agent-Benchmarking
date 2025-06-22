@@ -1,0 +1,45 @@
+{
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk", // uncommented command for proper execution
+      "args": [
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-synctex=1",
+        "-outdir=../build", // relative from overleaf/ to build/
+        "-auxdir=../auxdir", // relative from overleaf/ to auxdir/
+        "%DOCFILE%"
+      ],
+      "env": {
+        "CLSINPUTS": "../document-classes//:",
+        "TEXINPUTS": "../document-classes//:../sections//:../setups//:",
+        "BSTINPUTS": "../bibliographies//:",
+        "BIBINPUTS": "../bibliographies//:"
+      }
+    }
+  ],
+  "latex-workshop.latex.outDir": "../build", // ensure relative path is correct
+  "latex-workshop.latexindent.args": [
+    "-c",
+    "%DIR%/",
+    "%TMPFILE%",
+    "-y=defaultIndent:'  '",
+    "-y=modifyLineBreaks:removeTrailingWhitespace:beforeLineBreak:1"
+  ],
+  "[latex]": {
+    "editor.formatOnSave": true
+  },
+  "python-envs.pythonProjects": [
+    {
+      "path": "src/docker/vms/ubuntu-old",
+      "envManager": "ms-python.python:venv",
+      "packageManager": "ms-python.python:pip"
+    },
+    {
+      "path": "total/spider2-v/pyautogui_screenshot_o4-mini-2025-04-16_ef",
+      "envManager": "ms-python.python:venv",
+      "packageManager": "ms-python.python:pip"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "b09a0441-20b3-45f1-966a-4d521e46c7ea",
+  "snapshot": "jupyter",
+  "instruction": "Display the 10 actors whose films rented the most, sorted in descending order",
+  "source": [
+    "https://www.kaggle.com/code/kapturovalexander/sql-postgresql-for-data-science"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 8,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "database.db",
+        "remote_path": "/home/user/Desktop/database.db"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "result.csv",
+        "remote_path": "/home/user/Desktop/result.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "type": "upload_script_and_execute",
+      "parameters": {
+        "src": "init.sh",
+        "dest": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_csv",
+    "arguments": {
+      "local_expected": "gold.csv",
+      "vm_result": "/home/user/Desktop/result.csv",
+      "ignore_order": true
+    }
+  },
+  "counterpart": "a27d5fea-4854-4301-812c-73efa1c38d72"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "1f16fbd5-cdf3-4cb2-b02b-9c31f11cc77d",
+  "snapshot": "jupyter",
+  "instruction": "Help me create a new Jupyter notebook named `tensor.ipynb` using the contents of the `script.py` file on the desktop into a single code cell in the notebook. You don't need to run the notebook.\n\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\n\n1. In VSCode, open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`) and type `Jupyter: Create New Blank Notebook`, then press Enter.\n2. In the new notebook tab, make sure the selected kernel is ..action-env/ .\n3. In the VSCode file explorer (usually on the left), open the `Desktop` folder and double-click `script.py` to open it.\n4. Select all the code in `script.py` (`Ctrl+A`, then `Ctrl+C`) to copy it.\n5. Switch back to the new notebook tab and paste the code into the first code cell.\n6. Save the notebook by clicking `File > Save As...`, then type `tensor.ipynb` and save it to the Desktop.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://jupyterlab.readthedocs.io/en/4.1.x/user/files.html#creating-files-and-activities"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+
+  "tags": ["gui", "traditional_data_processing", "verbose"],
+  "action_number": 7,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "script.py",
+        "remote_path": "/home/user/Desktop/script.py"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_cells",
+    "arguments": {
+      "local_expected": "tensor_gold.ipynb",
+      "vm_result": "/home/user/Desktop/tensor.ipynb"
+    }
+  },
+  "counterpart": "a2a9b12c-c428-4673-a9c2-38c24d1c7eef"
+}

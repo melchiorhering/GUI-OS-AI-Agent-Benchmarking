@@ -1,0 +1,57 @@
+{
+  "id": "f650d0be-7222-42ea-9f78-5e59b31b37e3",
+  "snapshot": "jupyter",
+  "instruction": "Find baby names that appear in all recorded years and sort them in descending order by their total occurrences.",
+  "source": [
+    "https://www.kaggle.com/code/dillonmyrick/sql-beginner-to-advanced-with-practical-examples/notebook"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 11,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "usa_baby_names.csv",
+        "remote_path": "/home/user/Desktop/usa_baby_names.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "baby_names.db",
+        "remote_path": "/home/user/Desktop/baby_names.db"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "result.csv",
+        "remote_path": "/home/user/Desktop/result.csv"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_csv",
+    "arguments": {
+      "local_expected": "gold.csv",
+      "vm_result": "/home/user/Desktop/result.csv",
+      "ignore_order": true
+    }
+  },
+  "counterpart": "5eab2fda-8c01-4b26-918b-0f832ebb1e13"
+}

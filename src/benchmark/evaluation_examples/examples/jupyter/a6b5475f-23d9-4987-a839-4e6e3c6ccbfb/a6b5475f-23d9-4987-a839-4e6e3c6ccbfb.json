@@ -1,0 +1,35 @@
+{
+  "id": "a6b5475f-23d9-4987-a839-4e6e3c6ccbfb",
+  "snapshot": "jupyter",
+  "instruction": "Please help me get the code in the opened Jupyter notebook running smoothly.",
+  "source": [
+    "https://github.com/ozlerhakan/datacamp/tree/master/Working%20with%20Categorical%20Data%20in%20Python"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 15,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "notebook_gold.ipynb",
+      "vm_result": "/home/user/Desktop/notebook.ipynb"
+    }
+  },
+  "counterpart": "20030405-417c-425b-ab3f-6506b265ec85"
+}

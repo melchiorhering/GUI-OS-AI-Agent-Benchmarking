@@ -1,0 +1,42 @@
+{
+  "id": "75e61e47-3986-4250-9610-1bc0d77adcc7",
+  "snapshot": "jupyter",
+  "instruction": "I want to use Logistic Regression to predict whether a student will be admitted to a college or not, and have now built the code framework in this opened jupyter notebook. Please read the framework code and complete all the #TODO sections. Note that you can just add code to the current cells. Finally, you need to run the code and save it.",
+  "source": [
+    "https://towardsdatascience.com/logistic-regression-in-python-f66aeb15e83e"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 8,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "data.csv",
+        "remote_path": "/home/user/Desktop/data.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "logistic_regression.ipynb",
+        "remote_path": "/home/user/logistic_regression.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "logistic_regression_gold.ipynb",
+      "vm_result": "/home/user/Desktop/logistic_regression.ipynb"
+    }
+  },
+  "counterpart": "040af931-8371-4765-9908-2a36ff4e4518"
+}

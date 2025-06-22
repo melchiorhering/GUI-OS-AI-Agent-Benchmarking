@@ -1,0 +1,35 @@
+{
+  "id": "20030405-417c-425b-ab3f-6506b265ec85",
+  "snapshot": "jupyter",
+  "instruction": "Please help me get the code in the opened Jupyter notebook running smoothly, performing all actions directly within VS Code cells.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nWe need to get this code running smoothly by only adding and running code in the notebook cells.\n1. First, ensure VS Code is using your custom `uv` environment. In the top-right corner of the notebook editor, click the kernel selector and choose the Python interpreter from the path `~/Desktop/.action-env/bin/python`.\n2. Run all the cells in the notebook by clicking the \"Run All\" button (a double play icon) in the toolbar. The kernel will start automatically.\n3. You will encounter a `ModuleNotFoundError: No module named 'nltk'`. \n4. To fix this directly in the notebook, insert a new code cell at the top and enter the following command. The `!` tells the notebook to execute this as a shell command, and `uv pip install` will install the package into the active environment.\n```python\n!uv pip install nltk\n```\n5. Run this new cell. After it completes successfully, you can delete it to keep your notebook clean.\n6. Click the \"Restart\" kernel icon (a circular arrow) and then \"Run All\" again.\n7. Now, a new error will appear in the output:\n ```\nLookupError: \n**********************************************************************\n  Resource stopwords not found.\n  Please use the NLTK Downloader to obtain the resource:\n\n  >>> import nltk\n  >>> nltk.download('stopwords')\n  \n**********************************************************************\n```\n8. To resolve this, insert another new code cell at the top of the notebook and enter the following Python code:\n    ```python\n    import nltk\n    nltk.download(\"stopwords\")\n    ```\n9. Run this cell to download the required data. Once the download is complete, you can delete this cell as well.\n10. Click the \"Restart\" kernel icon and then \"Run All\" one final time.\n11. The entire notebook should now execute successfully without any errors.\n12. Press the hotkey \"Ctrl+S\" to save the fully executed and clean notebook.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://github.com/ozlerhakan/datacamp/tree/master/Working%20with%20Categorical%20Data%20in%20Python"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 15,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "notebook_gold.ipynb",
+      "vm_result": "/home/user/Desktop/notebook.ipynb"
+    }
+  },
+  "counterpart": "a6b5475f-23d9-4987-a839-4e6e3c6ccbfb"
+}

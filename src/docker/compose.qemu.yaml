@@ -1,0 +1,41 @@
+# Global VM resource settings
+# Configuration can be found here: https://github.com/qemus/qemu
+# THIS DOCKER COMPOSE FILE IS USED FOR SETTING UP THE BASE VM ENVIRONMENT
+services:
+  ubuntu-base:
+    image: qemux/qemu
+    container_name: ubuntu-base
+
+    # Mount the qcow2 we built earlier as /boot.qcow2 (overrides BOOT)
+    volumes:
+      # - ${ROOT_DIR}/src/docker/vms/ubuntu-base-snap1.qcow2:/boot.qcow2 # For using snapshots
+      - ${ROOT_DIR}/src/docker/vms/ubuntu-base/boot.iso:/boot.iso
+      - ${ROOT_DIR}/src/docker/vms/ubuntu-base/storage:/storage # Setting the storage directory
+      - ${ROOT_DIR}/src/docker/shared:/shared # Shared directory for the VM; in the container you have to mount `mount -t 9p -o trans=virtio shared /mnt/container`
+      # - ${ROOT_DIR}/src/docker/vms/ubuntu-base/data.img:/boot.img # When image is created use this to start the image
+
+    # Grant KVM + networking devices
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+
+    # Runtime tweaks
+    environment:
+      # BOOT: "https://releases.ubuntu.com/jammy/ubuntu-22.04.5-desktop-amd64.iso" downloads and install a new iso image
+      # BOOT: "ubuntu" # SET THIS ONCE FOR THE FIRST CONTAINER BUILD/RUN  (THIS DOWNLOADS THE LATEST ISO)
+      RAM_SIZE: "4G" # ↑ RAM (default 2G)
+      CPU_CORES: "4" # ↑ vCPUs (default 2)
+      DISK_SIZE: "25g" # Set this to resize the disk
+      DEBUG: "Y"
+      # ARGUMENTS: # Optional: You can create the ARGUMENTS environment variable to provide additional arguments to QEMU at runtime
+
+    ports:
+      - 8006:8006 # Web console (noVNC)
+      - 2222:22 # SSH from host → guest
+      - 8888:8888 # Jupyter Kernel Gateway
+      - 8765:8765 # FastAPI Observation server
+
+    restart: unless-stopped
+    stop_grace_period: 2m

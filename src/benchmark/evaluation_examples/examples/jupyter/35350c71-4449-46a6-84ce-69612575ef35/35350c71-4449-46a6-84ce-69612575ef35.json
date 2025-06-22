@@ -1,0 +1,36 @@
+{
+  "id": "35350c71-4449-46a6-84ce-69612575ef35",
+  "snapshot": "jupyter",
+  "instruction": "Help me apply Data Scaling to the famous California Housing dataset. Follow the instructions specified in the jupyter notebook. Add codes only to the existing cells, and in the end run all the cells and save the jupyter notebook.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nThis task requires you to apply some data preprocessing techniques, especially data scaling, to the famous California Housing Datasets within a VS Code notebook.\n1.  **Complete #TODO 1:** Find the first `#TODO` comment. In that cell, add the following line to preview the first few rows of the DataFrame:\n    ```python\n    df.head()\n    ```\n2.  **Complete #TODO 2:** Locate the second `#TODO` comment. Add the following line to split your data into training and testing sets:\n    ```python\n    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=SEED)\n    ```\n3.  **Complete #TODO 3:** Find the third `#TODO` comment. Here you will instantiate and apply the scaler. Add all of the following lines in sequence to that cell:\n    ```python\n    # First, instantiate a standard scaler.\n    scaler = StandardScaler()\n\n    # Next, fit the scaler only on the training dataset.\n    scaler.fit(X_train)\n\n    # Finally, transform both the training and testing datasets.\n    X_train = scaler.transform(X_train)\n    X_test = scaler.transform(X_test)\n    ```\n4.  **Run the Notebook:** After filling in all the required code, execute the entire notebook to apply the scaling. Click the **\"Run All\"** icon (it looks like a double play symbol) in the notebook's top toolbar.\n5.  **Save the File:** Once all cells have finished running, save your completed notebook by pressing the keyboard shortcut `Ctrl+S`.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+
+  "source": [
+    "https://stackabuse.com/k-nearest-neighbors-algorithm-in-python-and-scikit-learn/"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 9,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "data_scaling.ipynb",
+        "remote_path": "/home/user/Desktop/data_scaling.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "data_scaling_gold.ipynb",
+      "vm_result": "/home/user/Desktop/data_scaling.ipynb"
+    }
+  },
+  "counterpart": "d4b4bde1-84f6-4644-b993-65dccbe15ea0"
+}

@@ -1,0 +1,35 @@
+{
+  "id": "040af931-8371-4765-9908-2a36ff4e4518",
+  "snapshot": "jupyter",
+  "instruction": "I want to use Logistic Regression to predict whether a student will be admitted to a college or not, and have now built the code framework in this opened jupyter notebook. Please read the framework code and complete all the #TODO sections. Note that you can just add code to the current cells. Finally, you need to run the code and save it.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nThis task is to use a VS Code jupyter notebook to finish a small ML task by implementing the functions with a #TODO comment. In the opened ipynb file:\n1. **Complete the 1st #TODO:** Find the first `#TODO` comment. In that cell, add the following line to load the dataset using pandas:\n```python\ndata = pd.read_csv(path, header=None, names=['Exam1', 'Exam2', 'Admitted'])\n```\n2. **Complete the 2nd #TODO:** Locate the `sigmoid` function definition. Replace the `return None` statement with the following line to implement the sigmoid activation function:\n```python\nreturn 1 / (1 + np.exp(-z))\n```\n3. **Complete the 3rd #TODO:** Find the third `#TODO`. In that cell, add the following line to insert a column of ones as the first column of the dataframe for the intercept term:\n```python\ndata.insert(0, 'Ones', 1)\n```\n4. **Complete the 4th #TODO:** In the `gradient` function definition, replace `return None` with the code to calculate the gradient of the cost function:\n```python\nreturn (1/len(X) * X.T @ (sigmoid(X @ theta.T) - Y))\n```\n5. **Complete the 5th #TODO:** In the `predict` function definition, replace `return None` with the logic to classify predictions based on a 0.5 probability threshold:\n```python\nprobability = sigmoid(X @ theta.T)\nreturn [1 if x >= 0.5 else 0 for x in probability]\n```\n6. **Run the Notebook:** After you have filled in all the `#TODO` sections, execute the entire script. Click the **\"Run All\"** icon (it looks like a double play symbol) in the notebook's top toolbar.\n7. **Save the File:** Once all cells have run successfully, save your completed notebook by pressing the keyboard shortcut `Ctrl+S`.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://towardsdatascience.com/logistic-regression-in-python-f66aeb15e83e"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 8,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "data.csv",
+        "remote_path": "/home/user/Desktop/data.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "logistic_regression.ipynb",
+        "remote_path": "/home/user/Desktop/logistic_regression.ipynb"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_cells",
+    "arguments": {
+      "local_expected": "logistic_regression_gold.ipynb",
+      "vm_result": "/home/user/Desktop/logistic_regression.ipynb"
+    }
+  },
+  "counterpart": "75e61e47-3986-4250-9610-1bc0d77adcc7"
+}

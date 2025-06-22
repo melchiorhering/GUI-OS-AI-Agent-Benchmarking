@@ -1,0 +1,42 @@
+{
+  "id": "5085517b-69e9-467a-897b-21b8fd926bde",
+  "snapshot": "jupyter",
+  "instruction": "Help me build a Decision Tree model to classify the onset of diabetes based on different diagnostic measures. Add codes only to the existing cells, and in the end run all the cells and save the jupyter notebook.",
+  "source": [
+    "https://www.datacamp.com/tutorial/decision-tree-classification-python"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 8,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "diabetes.csv",
+        "remote_path": "/home/user/Desktop/diabetes.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "decision_tree.ipynb",
+        "remote_path": "/home/user/Desktop/decision_tree.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "decision_tree_gold.ipynb",
+      "vm_result": "/home/user/Desktop/decision_tree.ipynb"
+    }
+  },
+  "counterpart": "5085517b-69e9-467a-897b-21b8fd926bde"
+}

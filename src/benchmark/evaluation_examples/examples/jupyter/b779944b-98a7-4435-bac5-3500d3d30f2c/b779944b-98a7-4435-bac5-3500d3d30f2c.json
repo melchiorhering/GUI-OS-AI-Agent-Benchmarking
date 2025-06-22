@@ -1,0 +1,36 @@
+{
+  "id": "b779944b-98a7-4435-bac5-3500d3d30f2c",
+  "snapshot": "jupyter",
+  "instruction": "Help me find the best K value for a KNN regressor on the California Housing Dataset. Add codes only to the existing cells, and in the end run all the cells and save the jupyter notebook.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nThis task requires you to find the best K value for a KNN regressor on the famous California Housing Dataset within a VS Code notebook.\n1.  **Complete the #TODO:** Find the cell with the `#TODO` comment. Here, you need to write a loop to test different values of K (from 1 to 39). Copy the entire Python code block below and paste it into the cell under the comment.\n    ```python\n    # This code assumes 'error = []' has been initialized in a cell above.\n    # It iterates from K=1 to K=39, trains a model for each, and records the error.\n    for i in range(1, 40):\n        # Instantiate a KNN regressor with K = i.\n        knn = KNeighborsRegressor(n_neighbors=i)\n        \n        # Fit the KNN regressor on the training dataset.\n        knn.fit(X_train, y_train)\n        \n        # Calculate the predict values for the testing dataset.\n        pred_i = knn.predict(X_test)\n        \n        # Calculate the mean absolute error and append it to the error list.\n        mae = mean_absolute_error(y_test, pred_i)\n        error.append(mae)\n    ```\n2.  **Run the Notebook:** After you have added the code, execute the entire notebook to run the hyperparameter search. Click the **\"Run All\"** icon (it looks like a double play symbol) in the notebook's top toolbar. Please be patient, as this step may take some time to complete.\n3.  **Save the File:** Once all cells have finished running and the error plot is displayed, save your completed notebook by pressing the keyboard shortcut `Ctrl+S`.\nYou can exactly follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://stackabuse.com/k-nearest-neighbors-algorithm-in-python-and-scikit-learn/"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
+  "action_number": 10,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "KNN.ipynb",
+        "remote_path": "/home/user/Desktop/KNN.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "KNN_gold.ipynb",
+      "vm_result": "/home/user/Desktop/KNN.ipynb"
+    }
+  },
+
+  "counterpart": "30f3108a-0432-46b4-88cf-49acb42ad39b"
+}

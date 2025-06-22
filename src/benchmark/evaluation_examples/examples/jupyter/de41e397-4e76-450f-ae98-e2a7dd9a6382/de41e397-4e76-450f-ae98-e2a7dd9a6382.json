@@ -1,0 +1,71 @@
+{
+  "id": "de41e397-4e76-450f-ae98-e2a7dd9a6382",
+  "snapshot": "jupyter",
+  "instruction": "Display the number of films in each category, sorted in descending order",
+  "source": [
+    "https://www.kaggle.com/code/kapturovalexander/sql-postgresql-for-data-science"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 11,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "category.csv",
+        "remote_path": "/home/user/Desktop/category.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "film_actor.csv",
+        "remote_path": "/home/user/Desktop/film_actor.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "film_category.csv",
+        "remote_path": "/home/user/Desktop/film_category.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "film.csv",
+        "remote_path": "/home/user/Desktop/film.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "result.csv",
+        "remote_path": "/home/user/Desktop/result.csv"
+      }
+    },
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "notebook.ipynb",
+        "remote_path": "/home/user/Desktop/notebook.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_csv",
+    "arguments": {
+      "local_expected": "gold.csv",
+      "vm_result": "/home/user/Desktop/result.csv",
+      "ignore_order": true
+    }
+  },
+  "counterpart": "dd8ef83e-61b4-48b6-b7e5-974df9a13aa3"
+}

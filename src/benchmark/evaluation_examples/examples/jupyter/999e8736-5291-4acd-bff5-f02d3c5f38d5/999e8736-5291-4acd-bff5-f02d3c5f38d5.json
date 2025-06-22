@@ -1,0 +1,35 @@
+{
+  "id": "999e8736-5291-4acd-bff5-f02d3c5f38d5",
+  "snapshot": "jupyter",
+  "instruction": "Help me build a linear SVM model and use it to classify over the famous cancer dataset. Add codes only to the existing cells, and in the end run all the cells and save the jupyter notebook.",
+  "source": [
+    "https://www.datacamp.com/tutorial/svm-classification-scikit-learn-python"
+  ],
+  "related_apps": ["vscode", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 9,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "SVM.ipynb",
+        "remote_path": "/home/user/Desktop/SVM.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_notebook_outputs",
+    "arguments": {
+      "local_expected": "SVM_gold.ipynb",
+      "vm_result": "/home/user/Desktop/SVM.ipynb"
+    }
+  },
+  "counterpart": "54d9869c-3926-4cfb-ba93-4134a5778701"
+}

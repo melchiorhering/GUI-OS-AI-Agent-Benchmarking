@@ -1,0 +1,39 @@
+{
+  "id": "910797bf-086d-4d21-9d8d-22758f2cd4a4",
+  "snapshot": "jupyter",
+  "instruction": "There is one jupyter notebook in the `~/Downloads` directory. Open it for me at port 1036.",
+  "source": [
+    "https://docs.jupyter.org/en/latest/running.html#how-do-i-start-the-notebook-using-a-custom-ip-or-port"
+  ],
+  "related_apps": ["chromium", "terminal", "jupyter"],
+  "tags": ["cli+gui", "traditional_data_processing", "abstract"],
+  "action_number": 4,
+  "config": [
+    {
+      "func": "upload_file_to_vm",
+      "arguments": {
+        "local_path": "Aragon_Conviction_Voting_Model.ipynb",
+        "remote_path": "/home/user/Downloads/Aragon_Conviction_Voting_Model.ipynb"
+      }
+    },
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
+  ],
+  "evaluation": {
+    "func": "compare_script_logs",
+    "arguments": {
+      "eval_script": "eval.sh",
+      "vm_eval_logs": "/home/user/eval.log",
+      "rules": {
+        "include": ["SUCCESS"],
+        "exclude": ["FAILURE"]
+      }
+    }
+  },
+  "counterpart": "e85047db-a5c5-4153-a6cb-4c272b11411c"
+}
