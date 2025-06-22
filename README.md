@@ -6,11 +6,28 @@ This repository contains the source code and experimental setup for **"Enhancing
 
 While powerful benchmarks like Spider2-V provide realistic tasks for evaluating AI agents, their often monolithic designs can hinder research due to poor developer experience (Dev-X), limited observability, and a lack of reproducibility. This framework, built upon the lightweight and code-centric **[Smolagents](https://github.com/huggingface/smolagents)** library, addresses these challenges directly.
 
-## 🖼️ Framework Overview
+## 🖼️ Architectural Overview
 
-The proposed architecture decouples the agent's logic from the task environment. It uses a stack of modern, open-source tools to create isolated, observable, and reproducible sandboxes for the agent to operate in.
+The proposed architecture decouples the agent's logic from the task environment. It uses a stack of modern, open-source tools to create isolated, observable, and reproducible sandboxes for the agent to operate in. This design focuses on modularity and standard interfaces, allowing components to be swapped and extended with minimal friction.
 
-![Framework Overview Diagram](media/overview-framework.png)
+![Framework Architecture Diagram](media/overview-framework.png)
+
+## 🔄 Agent Workflow
+
+At the core of the framework is a dynamic, iterative workflow loop that enables the agent to reason, act, and learn from feedback. This `Observe -> Plan -> Act` cycle is central to its problem-solving strategy:
+
+-   **1. Observation:** The agent begins by assessing its environment through a multi-modal observation. This includes both a **screenshot** of the GUI and the **textual output** (or error trace) from the last executed code.
+
+-   **2. Reasoning and Planning:** Based on this combined visual and textual data, the agent analyzes its progress, diagnoses any errors, and formulates a step-by-step plan to move closer to the final goal.
+
+-   **3. Action and Tool Usage:** The plan culminates in a concrete **action**. The agent decides whether to use direct Python code for efficiency or `pyautogui` for necessary GUI interaction. It then generates the code for the chosen tool.
+
+-   **4. Execution:** The action is executed in the sandboxed environment, which produces a new observation and restarts the loop.
+
+This iterative process allows the agent to tackle complex, multi-step tasks and provides a mechanism for autonomous error recovery.
+
+![Agent Workflow Loop Diagram](media/overview-workflow.png)
+
 
 ## ✨ Key Features
 
@@ -80,4 +97,4 @@ The repository includes Python scripts and notebooks to process the generated `s
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://opensource.org/license/mit) file for details.
