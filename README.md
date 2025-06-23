@@ -59,7 +59,7 @@ Ensure you have the following dependencies installed on your system:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/melchiorhering/Automating-DS-DE-Workflows.git](https://github.com/melchiorhering/Automating-DS-DE-Workflows.git)
+    git clone https://github.com/melchiorhering/Automating-DS-DE-Workflows.git
     cd Automating-DS-DE-Workflows
     ```
 
