@@ -10,7 +10,6 @@ dependencies = [
     "ipywidgets",
     "docker",
     "paramiko",
-    "pynput",
     "tenacity",
     "pandas",
     "websocket-client",
@@ -41,6 +40,9 @@ dependencies = [
     "flash-attn>=2.8.0.post2",
     "statsmodels>=0.14.4",
 ]
+
+[dependency-groups]
+dev = ["pre-commit>=4.2.0"]
 
 
 [tool.ruff]
