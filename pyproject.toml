@@ -1,7 +1,7 @@
 [project]
-name = "master-thesis"
+name = "Automating-DS-DE-Workflows"
 version = "0.1.0"
-description = "Master thesis project: Automating (Data Science & Engineering) Workflows with AI"
+description = "Master Thesis Project: Automating (Data Science & Engineering) Workflows with AI Agents"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
