@@ -80,9 +80,17 @@ Ensure you have the following dependencies installed on your system:
 
 4.  **Install Python dependencies with UV:**
     ```bash
-    uv sync
+    uv sync --all-extras
     ```
     This command reads the `pyproject.toml` file and syncs the project environment for you.
+
+
+5.  **Setup Pre-Commit**
+    ```bash
+    uv run pre-commit install
+    ```
+    This will setup pre-commit, pre-commit will make sure that the code stays a bit clean..
+
 
 ## 📈 Usage
 
