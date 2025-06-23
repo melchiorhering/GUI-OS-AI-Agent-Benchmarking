@@ -103,7 +103,7 @@ The main entry point for running experiments is the orchestrator script. You can
 uv run python src/orchestrator.py \
     --task-index /path/to/your/task_list.json \
     --tasks-root /path/to/your/task_definitions/ \
-    --results-root /path/to/your/output_directory
+    --results-root results/
 ```
 
 Results, logs, and other artifacts for each task run will be saved to the `results/` directory.

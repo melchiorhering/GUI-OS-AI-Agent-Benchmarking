@@ -2,7 +2,7 @@
 
 # --- Configuration ---
 # Set the target directory to search within.
-SEARCH_DIR="results/run2/jupyter"
+SEARCH_DIR="results/run3/jupyter"
 # Set the path to the JSON file containing the full list of expected directories.
 FULL_LIST_PATH="benchmark/evaluation_examples/test_jupyter.json"
 # Set the path for the output JSON file.

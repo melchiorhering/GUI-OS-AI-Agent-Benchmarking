@@ -3,6 +3,8 @@ data
 
 # Docker
 
+eda/
+run-benchmark.sh
 src/results
 total/
 src/docker/vms/*
