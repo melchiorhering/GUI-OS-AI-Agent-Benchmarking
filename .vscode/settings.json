@@ -11,12 +11,6 @@
         "-auxdir=../auxdir", // relative from overleaf/ to auxdir/
         "%DOCFILE%"
       ],
-      "env": {
-        "CLSINPUTS": "../document-classes//:",
-        "TEXINPUTS": "../document-classes//:../sections//:../setups//:",
-        "BSTINPUTS": "../bibliographies//:",
-        "BIBINPUTS": "../bibliographies//:"
-      }
     }
   ],
   "latex-workshop.latex.outDir": "../build", // ensure relative path is correct
@@ -30,16 +24,5 @@
   "[latex]": {
     "editor.formatOnSave": true
   },
-  "python-envs.pythonProjects": [
-    {
-      "path": "src/docker/vms/ubuntu-old",
-      "envManager": "ms-python.python:venv",
-      "packageManager": "ms-python.python:pip"
-    },
-    {
-      "path": "total/spider2-v/pyautogui_screenshot_o4-mini-2025-04-16_ef",
-      "envManager": "ms-python.python:venv",
-      "packageManager": "ms-python.python:pip"
-    }
-  ]
+
 }
