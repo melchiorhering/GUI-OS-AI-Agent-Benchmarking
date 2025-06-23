@@ -24,7 +24,6 @@ dependencies = [
     "rapidfuzz",
     "smolagents[litellm,telemetry,toolkit]==1.18.0",
     "opencv-python",
-    "ruff",
     "torch>=2.7.1",
     "torchvision>=0.22.1",
     "torchaudio>=2.7.1",
@@ -42,7 +41,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pre-commit>=4.2.0"]
+dev = ["pre-commit>=4.2.0", "ruff"]
 
 
 [tool.ruff]
