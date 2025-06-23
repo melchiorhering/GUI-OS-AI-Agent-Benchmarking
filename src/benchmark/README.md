@@ -1,10 +1,10 @@
-# Creating New Tasks
+# 🚀 Creating New Evaluation Tasks
 
-This guide explains how to create new evaluation tasks by leveraging the existing structure. The key is to understand the relationship between the Python files in this directory and the example configurations found in the `evaluation_examples` folder.
+Welcome! This guide will walk you through creating new evaluation tasks by leveraging the project's modular structure. By combining pre-built evaluation functions with simple configurations, you can easily set up powerful new tests.
 
-## Project Structure
+## 📂 Project Structure
 
-The project is organized as follows:
+The project is organized with a clear separation between evaluation logic and task configuration:
 
 ```
 .
@@ -18,10 +18,18 @@ The project is organized as follows:
 └── task.py
 ```
 
-## How It Works
+## ⚙️ How It Works
 
-* **Evaluation Functions (`.py` files):** The Python files in this directory (e.g., `general.py`, `table.py`, `task.py`) contain the core logic for performing evaluations. Each file provides a set of related functions designed to assess a specific aspect of a task.
+The system is designed around two core components:
 
-* **Task Setups (`evaluation_examples`):** The `evaluation_examples` directory contains practical examples of how to configure and define new tasks. Each example demonstrates how to use the evaluation functions from the Python files to build a complete evaluation pipeline.
+* **🧩 Evaluation Functions (`.py` files):** The Python files in this directory (e.g., `general.py`, `table.py`, `task.py`) are the building blocks of our evaluation system. Each file contains a library of functions designed to assess specific aspects of a task.
 
-To create a new task, you should look at the examples within `evaluation_examples` to understand how to structure your task configuration and then call the appropriate evaluation functions from the various `.py` files.
+* **📝 Task Setups (`evaluation_examples`):** The `evaluation_examples` directory contains practical examples that show you how to define new tasks. Think of these as recipes that combine the evaluation "ingredients" from the Python files to create a complete evaluation pipeline.
+
+## 🏁 Getting Started: Your First Task
+
+To create a new task, simply:
+
+1.  **Explore the examples:** Dive into the `evaluation_examples` directory to find a setup that resembles what you want to build.
+2.  **Configure your task:** Create a new configuration file based on the example.
+3.  **Call the functions:** Use the evaluation functions from the various `.py` files to bring your task to life.
