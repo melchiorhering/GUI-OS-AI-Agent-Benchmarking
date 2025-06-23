@@ -54,7 +54,7 @@ _Build once with QEMU/KVM, run anywhere with the **`qemux/qemu`** Docker image_
 
 ## 1 · Overview
 
-We use **QEMU/KVM** via the [`qemux/qemu`](<https://www.google.com/search?q=%5Bhttps://github.com/qemus/qemu%5D(https://github.com/qemus/qemu)>) Docker image to build and run Ubuntu (or any x86_64 distro). Set `BOOT=ubuntu` on the first run and the container downloads the official installer ISO automatically.
+We use **QEMU/KVM** via the [`qemux/qemu`](<https://github.com/qemus/qemu>) Docker image to build and run Ubuntu (or any x86_64 distro). Set `BOOT=ubuntu` on the first run and the container downloads the official installer ISO automatically.
 
 ---
 
