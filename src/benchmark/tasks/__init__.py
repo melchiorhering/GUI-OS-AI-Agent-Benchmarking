@@ -2,8 +2,8 @@
 
 # 1. Import the specific functions and classes you need from your submodules.
 from .configuration import upload_file_to_vm, upload_script_and_execute
-from .general import compare_script_logs, compare_text_file
-from .jupyter import (
+from .eval.general import compare_script_logs, compare_text_file
+from .eval.jupyter import (
     are_jupyter_outputs_cleared,
     compare_ipynb_files,
     compare_jupyterlab_images,
@@ -12,7 +12,7 @@ from .jupyter import (
     evaluate_multiple_notebooks,
     is_jupyter_cell_executed,
 )
-from .table import compare_csv
+from .eval.table import compare_csv
 from .task import TaskInput, TaskOutput
 
 CONFIG_DISPATCH = {

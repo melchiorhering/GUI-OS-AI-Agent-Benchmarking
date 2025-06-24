@@ -123,28 +123,28 @@ class SandboxExecutor(RemotePythonExecutor):
         self.logger.log(execution_logs)
         return packages
 
-    def run_code_raise_errors(self, code_action: str, return_final_answer: bool = False) -> tuple[Any, str]:
+    def run_code_raise_errors(self, code: str, return_final_answer: bool = False) -> tuple[Any, str]:
         """
         Execute code and return result based on whether it's a final answer.
         """
         try:
+            wrapped_code = code
             if return_final_answer:
-                match = self.final_answer_pattern.search(code_action)
+                match = self.final_answer_pattern.search(code)
                 if match:
-                    pre_final_answer_code = self.final_answer_pattern.sub("", code_action)
+                    pre_final_answer_code = self.final_answer_pattern.sub("", code)
                     result_expr = match.group(1)
                     wrapped_code = pre_final_answer_code + dedent(f"""
                         import pickle, base64
                         _result = {result_expr}
                         print("RESULT_PICKLE:" + base64.b64encode(pickle.dumps(_result)).decode())
                         """)
-            else:
-                wrapped_code = code_action
 
-            # Send execute request
             msg_id = self._send_execute_request(wrapped_code)
 
-            # Collect output and results
+            if self.ws is None:
+                raise ConnectionError("WebSocket connection is not active.")
+
             outputs = []
             result = None
             waiting_for_idle = False
@@ -154,7 +154,6 @@ class SandboxExecutor(RemotePythonExecutor):
                 msg_type = msg.get("msg_type", "")
                 parent_msg_id = msg.get("parent_header", {}).get("msg_id")
 
-                # Only process messages related to our execute request
                 if parent_msg_id != msg_id:
                     continue
 
@@ -182,6 +181,9 @@ class SandboxExecutor(RemotePythonExecutor):
     def _send_execute_request(self, code: str) -> str:
         """Send code execution request to kernel."""
 
+        if self.ws is None:
+            raise ConnectionError("Cannot send request: WebSocket connection is not active.")
+
         # Generate a unique message ID
         msg_id = str(uuid.uuid4())
 
@@ -205,6 +207,7 @@ class SandboxExecutor(RemotePythonExecutor):
             },
         }
 
+        # Pylance now knows self.ws is not None at this point
         self.ws.send(json.dumps(execute_request))
         return msg_id
 

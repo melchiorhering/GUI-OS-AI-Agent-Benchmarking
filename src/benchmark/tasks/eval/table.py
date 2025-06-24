@@ -6,8 +6,8 @@ from smolagents import LogLevel
 
 from agent.sandbox_agent import SandboxCodeAgent
 
-from .configuration import download_file_from_vm
-from .task import TaskInput
+from ...tasks.configuration import download_file_from_vm
+from ..task import TaskInput
 
 
 def compare_csv(

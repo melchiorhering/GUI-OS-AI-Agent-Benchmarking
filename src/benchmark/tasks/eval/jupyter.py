@@ -9,8 +9,8 @@ from smolagents import LogLevel
 
 from agent.sandbox_agent import SandboxCodeAgent
 
-from .configuration import download_file_from_vm
-from .task import TaskInput
+from ..configuration import download_file_from_vm
+from ..task import TaskInput
 
 
 def compare_notebook_cells(
@@ -20,28 +20,15 @@ def compare_notebook_cells(
     vm_result: str,
     **options,
 ) -> float:
-    """
-    Compare the source code of cells in two notebooks, following standard file handling.
-    """
     task.result_dir.mkdir(parents=True, exist_ok=True)
-
-    # --- Standardized Path Definitions ---
     vm_result_filename = Path(vm_result).name
     local_vm_result_path = task.result_dir / vm_result_filename
     expected_filename = Path(local_expected).name
     local_expected_reference_path = task.result_dir / expected_filename
     source_expected_file_path = task.task_dir / local_expected
 
-    # --- Standardized Logging ---
     agent.logger.log(f"Initiating notebook CELL comparison for task '{task.uid}':", level=LogLevel.INFO)
-    agent.logger.log(f"  VM Result: '{vm_result}' -> Local: '{local_vm_result_path}'", level=LogLevel.DEBUG)
-    agent.logger.log(
-        f"  Local Expected: '{source_expected_file_path}' -> Local: '{local_expected_reference_path}'",
-        level=LogLevel.DEBUG,
-    )
-
     try:
-        # --- Standardized File Preparation ---
         download_file_from_vm(agent, local_path=local_vm_result_path, remote_path=vm_result)
         if not source_expected_file_path.is_file():
             agent.logger.log(
@@ -49,22 +36,17 @@ def compare_notebook_cells(
                 level=LogLevel.ERROR,
             )
             return 0.0
-        # Create an audit copy of the expected file in the results directory
         shutil.copy2(source_expected_file_path, local_expected_reference_path)
-
         with open(local_vm_result_path, "r", encoding="utf-8") as result_file:
             result_nb = nbformat.read(result_file, as_version=4)
         with open(local_expected_reference_path, "r", encoding="utf-8") as expected_file:
             expected_nb = nbformat.read(expected_file, as_version=4)
-
     except Exception as e:
         agent.logger.log(f"❌ Exception during notebook cell comparison prep: {e}", level=LogLevel.ERROR)
         return 0.0
 
-    # --- Comparison Logic ---
     result_cells = result_nb.get("cells", [])
     expected_cells = expected_nb.get("cells", [])
-
     if len(result_cells) != len(expected_cells):
         agent.logger.log("🔎 Notebook cell count mismatch", level=LogLevel.INFO)
         return 0.0
@@ -136,25 +118,43 @@ def compare_notebook_outputs(
         agent.logger.log("ℹ️ Notebook output comparison failed: Cell count mismatch.", level=LogLevel.INFO)
         return 0.0
 
-    for result_cell, expected_cell in zip(result_cells, expected_cells):
-        if result_cell['cell_type'] != expected_cell['cell_type']:
+    for result_cell, expected_cell in zip(result_cells, expected_cells, strict=False):
+        if result_cell["cell_type"] != expected_cell["cell_type"]:
             print("Cell type mismatch!")
             return 0.0
-        if result_cell['cell_type'] == "code":
-            result_cell_outputs = [output for output in result_cell['outputs'] if ('name' in output and output['name'] == 'stdout' and 'Requirement already satisfied:' not in output['text'] and 'Successfully installed' not in output['text']) or ('data' in output and 'text/plain' in output['data'])]
-            expected_cell_outputs = [output for output in expected_cell['outputs'] if ('name' in output and output['name'] == 'stdout') or ('data' in output and 'text/plain' in output['data'])]
+        if result_cell["cell_type"] == "code":
+            result_cell_outputs = [
+                output
+                for output in result_cell["outputs"]
+                if (
+                    "name" in output
+                    and output["name"] == "stdout"
+                    and "Requirement already satisfied:" not in output["text"]
+                    and "Successfully installed" not in output["text"]
+                )
+                or ("data" in output and "text/plain" in output["data"])
+            ]
+            expected_cell_outputs = [
+                output
+                for output in expected_cell["outputs"]
+                if ("name" in output and output["name"] == "stdout")
+                or ("data" in output and "text/plain" in output["data"])
+            ]
             if len(result_cell_outputs) != len(expected_cell_outputs):
                 agent.logger.log(
                     f"ℹ️ Notebook output comparison failed: Length of the following output mismatch: result:{len(result_cell_outputs)} expected:{len(expected_cell_outputs)}.",
                     level=LogLevel.INFO,
                 )
                 return 0.0
-            for result_output, expected_output in zip(result_cell_outputs, expected_cell_outputs):
-                if 'name' in result_output and result_output != expected_output:
+            for result_output, expected_output in zip(result_cell_outputs, expected_cell_outputs, strict=False):
+                if "name" in result_output and result_output != expected_output:
                     agent.logger.log(result_output)
                     agent.logger.log(expected_output)
                     return 0.0
-                if 'data' in result_output and result_output['data']['text/plain'] != expected_output['data']['text/plain']:
+                if (
+                    "data" in result_output
+                    and result_output["data"]["text/plain"] != expected_output["data"]["text/plain"]
+                ):
                     agent.logger.log(result_output)
                     agent.logger.log(expected_output)
                     return 0.0
@@ -448,22 +448,9 @@ def evaluate_multiple_notebooks(
     operator: str,
     comparisons: List[Dict[str, Any]],
 ) -> float:
-    """
-    Evaluates a task against multiple notebook comparison criteria using a logical operator.
-
-    Args:
-        agent: The SandboxCodeAgent instance.
-        task: The TaskInput object containing task details.
-        operator: The logical operator to apply ("and" or "or").
-        comparisons: A list of dictionaries, each defining a sub-comparison
-                     with 'func' (e.g., 'compare_notebook_cells') and 'arguments'.
-
-    Returns:
-        float: The final score (1.0 for pass, 0.0 for fail) based on the operator.
-    """
     if not comparisons:
         agent.logger.log(
-            "❗ No comparisons defined for 'evaluate_multiple_notebooks'. Returning 0.0.", level=LogLevel.WARNING
+            "❗ No comparisons defined for 'evaluate_multiple_notebooks'. Returning 0.0.", level=LogLevel.INFO
         )
         return 0.0
 
@@ -477,42 +464,40 @@ def evaluate_multiple_notebooks(
         comp_func_name = comp_def.get("func")
         comp_arguments = comp_def.get("arguments", {})
 
-        # Use the imported EVAL_DISPATCH to get the comparison function
-        comp_func = _JUPYTER_EVAL_FUNCTIONS.get(comp_func_name)  # Use .get() for safer access
+        # FIX: Check if comp_func_name is a string before using it.
+        # This resolves the Pyright error.
+        if isinstance(comp_func_name, str):
+            comp_func = _JUPYTER_EVAL_FUNCTIONS.get(comp_func_name)
+        else:
+            comp_func = None
 
         if not comp_func:
             agent.logger.log(
-                f"❌ Unknown comparison function: '{comp_func_name}'. Skipping comparison {i + 1}.",
+                f"❌ Unknown or missing comparison function: '{comp_func_name}'. Skipping comparison {i + 1}.",
                 level=LogLevel.ERROR,
             )
             sub_scores.append(0.0)
             continue
 
         try:
-            # Pass agent and task to the sub-comparison function
             score = comp_func(agent=agent, task=task, **comp_arguments)
             sub_scores.append(score)
             agent.logger.log(f"Sub-comparison {i + 1} ('{comp_func_name}') result: {score}", level=LogLevel.INFO)
-
         except Exception as e:
             agent.logger.log(f"❌ Error during sub-comparison {i + 1} ('{comp_func_name}'): {e}", level=LogLevel.ERROR)
-            # traceback.print_exc() # Uncomment for more detailed debugging if needed
-            sub_scores.append(0.0)  # Treat exceptions as failures
+            sub_scores.append(0.0)
 
     final_score = 0.0
-
     if operator.lower() == "and":
-        # All sub-scores must be 1.0 (pass) for the overall score to be 1.0
         final_score = 1.0 if all(s == 1.0 for s in sub_scores) else 0.0
         agent.logger.log(f"Aggregation using 'AND' ({sub_scores}): Final Score = {final_score}", level=LogLevel.INFO)
     elif operator.lower() == "or":
-        # At least one sub-score must be 1.0 (pass) for the overall score to be 1.0
         final_score = 1.0 if any(s == 1.0 for s in sub_scores) else 0.0
         agent.logger.log(f"Aggregation using 'OR' ({sub_scores}): Final Score = {final_score}", level=LogLevel.INFO)
     else:
         agent.logger.log(
             f"❗ Invalid operator '{operator}'. Expected 'and' or 'or'. Returning 0.0.", level=LogLevel.ERROR
         )
-        final_score = 0.0  # Unknown operator means failure
+        final_score = 0.0
 
     return final_score

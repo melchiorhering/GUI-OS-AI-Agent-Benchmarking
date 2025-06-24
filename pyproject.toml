@@ -5,7 +5,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "Automating-DS-DE-Workflows"
+name = "automating-ds-de-workflows"
 version = "0.2.0"
 description = "Master Thesis Project: Automating (Data Science & Engineering) Workflows with AI Agents"
 readme = "README.md"
@@ -54,6 +54,7 @@ dependencies = [
     "seaborn>=0.13.2",
     "scipy>=1.15.3",
     "statsmodels>=0.14.4",
+    "pyyaml>=6.0.2",
 ]
 
 # Optional dependencies (for dev, test, etc.) use the standard 'project.optional-dependencies' table.
@@ -62,16 +63,17 @@ dev = ["ruff", "pytest", "pyright", "commitizen", "pre-commit>=4.2.0"]
 
 # This new section fixes the build error by explicitly telling Hatch
 # where to find your package's source code.
-[tool.hatch.build.targets.wheel]
-# The error "Unable to determine which files to ship" occurs because Hatch
-# cannot find a source directory named 'automating_ds_de_workflows'.
-# This configuration tells it where to look.
-#
-# Please verify this path matches your project structure.
-# - If your code is in 'src/automating_ds_de_workflows', this is correct.
-# - If your code is in a root folder like 'automating_ds_de_workflows',
-#   change this to: packages = ["automating_ds_de_workflows"]
-packages = ["src/automating_ds_de_workflows"]
+[tool.hatch.build.targets.wheel] #
+packages = ["src"]
+
+
+[tool.pyright]
+# Add the paths to any directories you want Pyright to ignore.
+# Common examples include virtual environments, build artifacts, and test data.
+exclude = ["src/agent/tools", "src/docker/observation-server"]
+include = ["src"]
+venvPath = "."
+venv = ".venv"
 
 
 [tool.ruff]

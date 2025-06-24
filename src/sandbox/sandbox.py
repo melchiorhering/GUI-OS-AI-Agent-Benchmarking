@@ -3,16 +3,14 @@ from __future__ import annotations
 import contextlib
 import time
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 import requests
 from smolagents import AgentLogger, LogLevel
 
 from .configs import SandboxVMConfig
 from .errors import VMOperationError
-from .virtualmachine import (
-    VMManager,
-)
+from .virtualmachine import VMManager
 
 
 class SandboxClient:
@@ -40,7 +38,6 @@ class SandboxClient:
                 print(
                     f"Attempt {attempt}/{self.retries}: An unexpected error occurred during health check: {e}. Retrying in {self.delay} seconds..."
                 )
-
             time.sleep(self.delay)
 
         raise ConnectionError(f"Failed to connect to sandbox server at {self.base_url} after {self.retries} attempts.")
@@ -48,17 +45,19 @@ class SandboxClient:
     def health(self):
         return requests.get(f"{self.base_url}/health").json()
 
-    def take_screenshot(self, method: str = "pillow", step: str = None):
+    def take_screenshot(self, method: str = "pillow", step: Optional[str] = None):
         """
         Takes a screenshot using the specified method.
         'step' is an optional string to prepend to the filename.
         """
-        params = {"method": method}
-        if step is not None: # Only add 'step' to params if it's not None
+        # FIX 1: Explicitly type the `params` dictionary to help the type checker.
+        params: Dict[str, str] = {"method": method}
+        if step is not None:
+            # Inside this block, `step` is guaranteed to be a string.
             params["step"] = step
 
         response = requests.get(f"{self.base_url}/screenshot", params=params)
-        response.raise_for_status() # Raise an exception for bad status codes (4xx or 5xx)
+        response.raise_for_status()
         return response.json()
 
     def start_recording(self):
@@ -69,9 +68,12 @@ class SandboxClient:
 
 
 class SandboxVMManager(VMManager):
-    """Specialized VMManager that wires FastAPI inside the guest.
-    This manager will focus on preparing shared directories and starting other necessary services.
-    """
+    """Specialized VMManager that wires FastAPI inside the guest."""
+
+    # FIX 2: Add a class-level type annotation for `cfg`.
+    # This tells Pylance that in this subclass, `self.cfg` is always the
+    # more specific SandboxVMConfig, resolving the attribute access errors.
+    cfg: SandboxVMConfig
 
     def __init__(
         self,
@@ -84,6 +86,7 @@ class SandboxVMManager(VMManager):
             raise TypeError("SandboxVMManager requires SandboxVMConfig")
         super().__init__(config=config, logger=logger, **kwargs)
 
+        self.container = self.container  # To satisfy linter if it complains about unused attribute
         self._should_cleanup = not (self.container and self.container.status == "running")
         self._preserve_on_exit = preserve_on_exit
 
@@ -91,7 +94,6 @@ class SandboxVMManager(VMManager):
         if self._preserve_on_exit:
             self.logger.log("⚠️ Container files will be preserved on exit", level=LogLevel.DEBUG)
 
-    # Context helpers
     def connect_or_start(self):
         """Either reconnect to a running container or bootstrap anew."""
         if self.container and self.container.status == "running":
@@ -109,7 +111,6 @@ class SandboxVMManager(VMManager):
         finally:
             self.__exit__(None, None, None)
 
-    # Enter/exit
     def __enter__(self) -> "SandboxVMManager":
         try:
             self.start_agent_vm()
@@ -128,20 +129,9 @@ class SandboxVMManager(VMManager):
         self.cleanup(delete_storage=delete_storage)
         return False
 
-    # Internal helpers
     def mount_shared_dir(self):
-        """
-        Mounts the a volume in the container to a specific host directory:
-        Where `shared` is a shared volume with some directory on the host.
-
-        ```sh
-        mount -t 9p -o trans=virtio shared /mnt/container
-        ```
-        """
-        # Create the mount point directory. The -p flag prevents errors if it already exists.
+        """Mounts the shared volume inside the guest."""
         self.ssh.exec_command("mkdir -p /mnt/container", as_root=True)
-
-        # Mount the shared volume to the newly created directory
         self.ssh.exec_command("mount -t 9p -o trans=virtio shared /mnt/container", as_root=True)
 
     def _initialize_sandbox_client(self):
@@ -174,6 +164,5 @@ class SandboxVMManager(VMManager):
         self.logger.log_rule("🔁 Reconnect to Sandbox VM")
         self.start()
         self.logger.log("VM Started and SSH connection established!")
-
         self._initialize_sandbox_client()
         self.logger.log("✅ Reconnected & services healthy", level=LogLevel.DEBUG)

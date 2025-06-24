@@ -1,9 +1,10 @@
+# src/sandbox/config.py
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Literal, Union
 
 from .errors import VMCreationError
 
@@ -24,7 +25,7 @@ class VMConfig:
     # ──────────────── Container Settings ────────────────
     container_image: str = "qemux/qemu"  # Docker image for the VM container
     container_name: str = "qemu"  # Container name
-    restart_policy: str = "always"  # Docker restart policy
+    restart_policy: Literal["always", "on-failure"] = "always"  # Docker restart policy
 
     # ──────────────── VM Hardware Configuration ────────────────
     vm_ram: str = "4G"  # Amount of RAM for the VM
@@ -37,12 +38,13 @@ class VMConfig:
 
     # ──────────────── Paths and Directories ────────────────
     root_dir: Path = Path("docker")  # Root directory for all VM resources
-    suffix: str = None  # suffix for the shared_dir
+    suffix: Union[str, None] = None  # suffix for the shared_dir
     shared_dir: Path = Path("results")  # Root directory for the shared-files direcotry (host-container)
 
     # ──────────────── Other Settings ────────────────
     enable_debug: bool = True  # Enable debug mode
     extra_env: Dict[str, str] = field(default_factory=dict)  # Additional environment variables
+    runtime_env: Dict[str, str] = field(default_factory=dict)  # Runtime environment variables
 
     def __post_init__(self):
         # Resolve paths to absolute paths

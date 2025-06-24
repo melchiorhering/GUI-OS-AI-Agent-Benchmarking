@@ -3,6 +3,7 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
+from typing import Union
 
 from rich.console import Console, Group
 from rich.table import Table
@@ -164,7 +165,7 @@ class SandboxAgentLogger(AgentLogger):
         console = Console(record=True)
         super().__init__(level=level, console=console)
 
-    def save_log_file(self, directory: str, filename: str = "console_log.html"):
+    def save_log_file(self, directory: Union[Path, str], filename: str = "console_log.html"):
         """
         Saves the entire recorded console history to a file.
 
@@ -187,7 +188,7 @@ class SandboxAgentLogger(AgentLogger):
 
         self.log(f"Console log saved to [bold cyan]{output_path}[/bold cyan]")
 
-    def save_agent_tree(self, agent, directory: str, filename: str = "agent_tree.svg"):
+    def save_agent_tree(self, agent, directory: Union[str, Path], filename: str = "agent_tree.svg"):
         """
         Generates and saves a visualization of the agent tree to a file.
         This method is separate from the main log to create a clean, dedicated output.

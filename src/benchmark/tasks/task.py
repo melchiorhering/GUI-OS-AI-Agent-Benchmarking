@@ -10,9 +10,8 @@ from smolagents import RunResult
 class TaskOutput:
     """A data object to store the flattened results of a single task run."""
 
-    # CORRECT: Use InitVar for a temporary initialization-only variable.
     # The type hint correctly allows for a string, a RunResult, or None.
-    source_result: InitVar[Optional[Union[str, "RunResult"]]] = None
+    source_result: InitVar[Optional[Union[str, "RunResult", Any]]] = None
 
     # --- Evaluation Fields ---
     score: float = 0.0
@@ -26,7 +25,6 @@ class TaskOutput:
     total_tokens: Optional[Dict[str, int]] = None
     total_timing: Optional[Dict[str, Any]] = None
 
-    # CORRECT: __post_init__ receives the InitVar `source_result` as an argument.
     def __post_init__(self, source_result: Optional[Union[str, "RunResult"]]):
         """
         Automatically called after __init__. It processes the source_result

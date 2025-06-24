@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import shutil
 import time
-from typing import Optional, Union
+from typing import Optional, Union, cast
 
 from smolagents import AgentLogger, LogLevel
 
 import docker
 from docker.client import DockerClient
-from docker.errors import NotFound
+from docker.errors import ImageNotFound, NotFound
+from docker.models.containers import Container, _RestartPolicy
 from docker.types import Mount
 
 from .configs import SandboxVMConfig, VMConfig
@@ -43,7 +44,7 @@ class VMManager:
 
         # Prepare an *unconnected* SSHClient; we'll connect in start()
         self.ssh = SSHClient(ssh_cfg or SSHConfig(port=self.cfg.host_ssh_port), logger=self.logger)
-        self.container: Union[docker.models.containers.Container, None] = None
+        self.container: Union[Container, None] = None
 
         self._validate_config()
         self._attach_to_existing_container_if_running()
@@ -61,7 +62,7 @@ class VMManager:
         Args:
             wait_for_ssh:   Poll sshd and cache an SSHClient connection.
             restart_if_running:  If True, call `docker restart` even when the
-                                 container is already running.
+                                container is already running.
         """
         if self.container is None:
             # nothing exists → create fresh
@@ -106,7 +107,13 @@ class VMManager:
     def _validate_config(self):
         if not self.cfg.base_data.exists():
             raise VMCreationError("Base data.img not found")
-        for port in (self.cfg.host_vnc_port, self.cfg.host_ssh_port, *self.cfg.extra_ports.values()):
+
+        # Combine ports for validation
+        all_ports = [self.cfg.host_vnc_port, self.cfg.host_ssh_port]
+        if self.cfg.extra_ports:
+            all_ports.extend(self.cfg.extra_ports.values())
+
+        for port in all_ports:
             if not (1 <= port <= 65535):
                 raise VMCreationError(f"Invalid port: {port}")
 
@@ -118,16 +125,16 @@ class VMManager:
             container = self.docker.containers.get(self.cfg.container_name)
             container.reload()  # refresh status field
 
-            self.container = container  # <<< always cache it
+            self.container = cast(Container, container)  # Cache the container object
 
-            if container.status in ("running", "paused"):
+            if self.container.status in ("running", "paused"):
                 self.logger.log(
-                    f"🔄 Reusing running container: {container.name}",
+                    f"🔄 Reusing running container: {self.container.name}",
                     level=LogLevel.INFO,
                 )
             else:
                 self.logger.log(
-                    f"🛑 Found stopped container {container.name} (status={container.status})",
+                    f"🛑 Found stopped container {self.container.name} (status={self.container.status})",
                     level=LogLevel.DEBUG,
                 )
                 # VMManager.start() will now .start() or .restart() it
@@ -147,7 +154,9 @@ class VMManager:
         deadline = time.time() + timeout
         while time.time() < deadline:
             try:
-                if self.ssh.exec_command("echo ready")["stdout"].strip() == "ready":
+                # FIX 1: Check if the result is not None before subscripting
+                result = self.ssh.exec_command("echo ready")
+                if result and result["stdout"].strip() == "ready":
                     self.logger.log("✅ sshd is ready", level=LogLevel.INFO)
                     return
             except Exception as exc:
@@ -161,7 +170,8 @@ class VMManager:
     def _ensure_image(self):
         try:
             self.docker.images.get(self.cfg.container_image)
-        except docker.errors.ImageNotFound:
+        # FIX 2: Use the correct exception class from docker.errors
+        except ImageNotFound:
             self.logger.log(f"📥 Pulling image {self.cfg.container_image}", level=LogLevel.DEBUG)
             self.docker.images.pull(self.cfg.container_image)
 
@@ -176,14 +186,18 @@ class VMManager:
         self._ensure_image()
         self.copy_vm_base_data_file()
 
-        # We only have to bind the storage and shared directories
         mounts = [
-            Mount(target="/boot.img", source=str(self.cfg.host_container_data), type="bind"),  # Uses the data.
-            Mount(
-                target="/shared", source=str(self.cfg.host_container_shared_dir), type="bind"
-            ),  # Uses the shared directory
+            Mount(target="/boot.img", source=str(self.cfg.host_container_data), type="bind"),
+            Mount(target="/shared", source=str(self.cfg.host_container_shared_dir), type="bind"),
         ]
-        ports = {8006: self.cfg.host_vnc_port, 22: self.cfg.host_ssh_port, **self.cfg.extra_ports}
+
+        # FIX 3: Ensure all port keys are strings with the protocol
+        ports = {
+            f"{self.cfg.host_vnc_port}/tcp": self.cfg.host_vnc_port,
+            "22/tcp": self.cfg.host_ssh_port,
+            **{f"{p}/tcp": p for p in self.cfg.extra_ports.values()},
+        }
+
         env = {
             "RAM_SIZE": self.cfg.vm_ram,
             "CPU_CORES": str(self.cfg.vm_cpu_cores),
@@ -191,28 +205,39 @@ class VMManager:
             **self.cfg.extra_env,
         }
 
-        self.container = self.docker.containers.run(
+        # The restart_policy expects a dictionary that matches the TypedDict
+        restart_policy: _RestartPolicy = {"Name": self.cfg.restart_policy}
+
+        container = self.docker.containers.run(
             image=self.cfg.container_image,
             name=self.cfg.container_name,
             environment=env,
             mounts=mounts,
-            ports=ports,
+            ports=ports,  # This now has the correct format
             devices=["/dev/kvm", "/dev/net/tun"],
             cap_add=["NET_ADMIN"],
             detach=True,
-            restart_policy={"Name": self.cfg.restart_policy},
+            restart_policy=restart_policy,
         )
+        self.container = cast(Container, container)
         self.logger.log("✅ Container started", level=LogLevel.INFO)
 
     # ------------------------------------------------------------------
     # Cleanup -----------------------------------------------------------
     # ------------------------------------------------------------------
     def cleanup(self, delete_storage: bool = True):
+        # Add a check here in case the container was never created
         if self.container:
-            self.container.stop()
-            self.container.remove(force=True, v=True)  # Set v=True to remove volumes
-            self.logger.log(f"Container {self.cfg.container_name} stopped & removed", level=LogLevel.INFO)
-            self.container = None
-        if delete_storage:
+            try:
+                self.container.stop()
+                self.container.remove(force=True, v=True)
+                self.logger.log(f"Container {self.cfg.container_name} stopped & removed", level=LogLevel.INFO)
+            except NotFound:
+                self.logger.log(f"Container {self.cfg.container_name} already removed.", level=LogLevel.DEBUG)
+            finally:
+                self.container = None
+
+        if delete_storage and self.cfg.host_container_dir.exists():
             shutil.rmtree(self.cfg.host_container_dir, ignore_errors=True)
+
         self.ssh.close()
