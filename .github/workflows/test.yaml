@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    name: "Test Package"
+    name: Package Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
