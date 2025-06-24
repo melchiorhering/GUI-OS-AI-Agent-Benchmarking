@@ -1,11 +1,11 @@
-# server/main.py
+# obervation-server/main.py
 import json
 import logging
 import os
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Literal, Optional
+from typing import Dict, Literal, Optional, Union, List
 
 import pyautogui
 from fastapi import FastAPI, Query
@@ -24,25 +24,26 @@ from src.recording import (
 )
 from src.utils import clear_shared_dir_simpler
 
-# ───────────────────── Logger Setup ─────────────────────
-log_dir = Path(os.getenv("SHARED_DIR", "/mnt/container")) / "logs"
-log_dir.mkdir(parents=True, exist_ok=True)
-log_path = log_dir / os.getenv("OBSERVATION_LOG", "observation-server.log")
-
+# ───────────────────── Logger Setup (Corrected) ─────────────────────
+# The log path is now determined by an environment variable from the startup script.
+# This makes the configuration centralized and robust.
 logger = logging.getLogger("SandboxServer")
 logger.setLevel(logging.DEBUG if os.getenv("DEBUG") == "1" else logging.INFO)
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-file_handler = logging.FileHandler(log_path)
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
+
+# Use a StreamHandler to log to stdout/stderr. The startup script will redirect this
+# to the log file and systemd journal. This is better than FileHandler for services.
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+logger.addHandler(stream_handler)
 
 
 # ───────────────────── Lifespan Event Setup ─────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    host = os.getenv("HOST", "0.0.0.0")
-    port = os.getenv("PORT", "8765")
-    logger.info(f"🔧 FastAPI Server starting up. Logging to: {log_path}")
+    host = os.getenv("FASTAPI_HOST", "0.0.0.0") # Use the same env var as the script
+    port = os.getenv("FASTAPI_PORT", "8765")   # Use the same env var as the script
+    logger.info(f"🔧 FastAPI Server starting up. Logging configured via startup script.")
     logger.info(f"🚀 Listening on http://{host}:{port}")
 
     # Initialize the recording module with shared resources
@@ -104,7 +105,13 @@ except Exception as e:
 
 
 # ───────────────────── Screenshot Utility (Unchanged - still in main.py) ─────────────────────
-def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Optional[str] = None) -> Dict[str, str]:
+def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Optional[str] = None) -> Dict[str, Union[str, List[int]]]:
+    """
+    Captures a screenshot, annotates it, and saves it.
+
+    The return type hint has been corrected to reflect that the dictionary
+    can contain values that are either strings or lists of integers.
+    """
     try:
         screenshot_dir = shared_dir / "screenshots"
         screenshot_dir.mkdir(parents=True, exist_ok=True)
@@ -166,6 +173,7 @@ def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Opt
 
         screenshot_img.save(filepath)
 
+        # The actual returned dictionary contains lists of ints, so the type hint must match.
         return {
             "screenshot_path": str(filepath.relative_to(shared_dir)),
             "mouse_position": [mouse_x, mouse_y],
@@ -174,7 +182,9 @@ def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Opt
 
     except Exception as e:
         logger.error(f"❌ Screenshot error: {e}")
+        # This return path is compatible with the new type hint
         return {"status": "error", "message": str(e)}
+
 
 
 # ───────────────────── API Endpoints ─────────────────────

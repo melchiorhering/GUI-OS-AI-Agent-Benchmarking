@@ -30,6 +30,7 @@ class VMConfig:
     # ──────────────── VM Hardware Configuration ────────────────
     vm_ram: str = "4G"  # Amount of RAM for the VM
     vm_cpu_cores: int = 4  # Number of CPU cores for the VM
+    vm_disk_size: str = "25g"
 
     # ──────────────── Network Configuration ────────────────
     host_vnc_port: int = 8006  # Host port for VNC access

@@ -5,7 +5,7 @@ description = "Project for sandbox services observation server"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi",
+    "fastapi[standard]",
     "numpy",
     "pillow",
     "pyautogui",

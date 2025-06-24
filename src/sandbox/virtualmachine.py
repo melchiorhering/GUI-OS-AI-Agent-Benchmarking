@@ -201,6 +201,7 @@ class VMManager:
         env = {
             "RAM_SIZE": self.cfg.vm_ram,
             "CPU_CORES": str(self.cfg.vm_cpu_cores),
+            "DISK_SIZE": self.cfg.vm_disk_size,
             "DEBUG": "Y" if self.cfg.enable_debug else "N",
             **self.cfg.extra_env,
         }
