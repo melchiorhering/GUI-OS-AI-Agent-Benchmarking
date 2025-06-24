@@ -1,0 +1,58 @@
+# .github/workflows/test.yml
+name: Python CI with UV
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      # Test against multiple Python versions for broader compatibility
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Cache uv dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          # Create a unique key for the cache based on the OS and the pyproject.toml hash
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      - name: Install Dependencies
+        # Use `uv sync` to install all dependencies from pyproject.toml,
+        # including optional dev dependencies.
+        run: uv sync --all-extras
+
+      - name: Lint with Ruff
+        # Use `uv run` to execute commands in the managed virtual environment
+        # without needing to source the activate script.
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+
+      - name: Run static type checking with Pyright
+        run: uv run pyright
+
+      - name: Run tests with Pytest
+        run: uv run pytest

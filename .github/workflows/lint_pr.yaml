@@ -1,0 +1,35 @@
+# .github/workflows/lint_pr.yml
+name: Lint PR Title
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  lint-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # You can customize the types here.
+          # The default types are:
+          # chore, ci, docs, feat, fix, perf, refactor, revert, style, test
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          # Allow optional scopes, like `feat(auth): add login page`
+          allow-optional-scope: true
