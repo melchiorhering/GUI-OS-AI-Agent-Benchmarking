@@ -9,7 +9,7 @@ repos:
     rev: 0.7.14
     hooks:
       - id: uv-sync
-      - id: uv-export # outputs requirement.txt
+    #   - id: uv-export # outputs requirement.txt
 
   # Standard pre-commit hooks for general file health.
   - repo: https://github.com/pre-commit/pre-commit-hooks
