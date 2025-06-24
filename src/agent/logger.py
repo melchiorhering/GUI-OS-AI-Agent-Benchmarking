@@ -117,6 +117,7 @@ class DefaultExtraFilter(logging.Filter):
 def get_orchestrator_logger(log_level=logging.INFO, log_file_path: Path = Path("orchestrator.log")) -> logging.Logger:
     """
     A factory function to build and configure the main orchestrator logger.
+    It ensures the log directory exists and clears the log file on each run.
     """
     logger = logging.getLogger("BenchmarkOrchestrator")
     logger.setLevel(log_level)
@@ -125,12 +126,16 @@ def get_orchestrator_logger(log_level=logging.INFO, log_file_path: Path = Path("
     if logger.hasHandlers():
         logger.handlers.clear()
 
+    # Ensure the directory for the log file exists before creating the file handler.
+    log_file_path.parent.mkdir(parents=True, exist_ok=True)
+
     # Console Handler (with colors and custom format)
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(CustomColoredFormatter())
     logger.addHandler(console_handler)
 
     # File Handler (without colors)
+    # The `mode="w"` argument clears the file each time the logger is initialized.
     file_handler = logging.FileHandler(log_file_path, mode="w", encoding="utf-8")
     file_formatter = logging.Formatter(
         "[%(task_uid)s] (%(task_idx)s/%(total_tasks)s) [%(asctime)s] - %(levelname)s - %(threadName)s - %(message)s",
