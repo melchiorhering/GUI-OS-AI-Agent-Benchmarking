@@ -18,7 +18,7 @@ def upload_folder_to_hub(folder_path: Path, repo_id: str, hf_token: str):
         repo_id=repo_id,
         folder_path=folder_path,
         repo_type="dataset",
-        allow_patterns=["*.iso","*.img", "*.qcow2","*.vhd", "*.vmdk", "*.vdi", "*.vmdk", "*.raw"],
+        allow_patterns=["*.iso", "*.img", "*.qcow2", "*.vhd", "*.vmdk", "*.vdi", "*.vmdk", "*.raw"],
     )
 
     print("✅ Upload complete!")
