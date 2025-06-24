@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Literal, Union
+from typing import Dict, Union
 
 from .errors import VMCreationError
 
@@ -25,7 +25,7 @@ class VMConfig:
     # ──────────────── Container Settings ────────────────
     container_image: str = "qemux/qemu"  # Docker image for the VM container
     container_name: str = "qemu"  # Container name
-    restart_policy: Literal["always", "on-failure"] = "always"  # Docker restart policy
+    # restart_policy: Literal["always", "on-failure"] = "always"  # Docker restart policy
 
     # ──────────────── VM Hardware Configuration ────────────────
     vm_ram: str = "4G"  # Amount of RAM for the VM
