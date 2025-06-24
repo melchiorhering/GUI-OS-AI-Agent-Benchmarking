@@ -94,6 +94,7 @@ extend-exclude = [
     "venv",
     "src/agent/tools/models/",
     "src/benchmark/evaluation_examples",
+    "src/docker/observation-server",
 ]
 # In addition to the standard set of inclusions, include `.ipynb` files.
 extend-include = ["*.ipynb"]
