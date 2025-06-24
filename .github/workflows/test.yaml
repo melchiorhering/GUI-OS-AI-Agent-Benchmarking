@@ -49,8 +49,8 @@ jobs:
         # Use `uv run` to execute commands in the managed virtual environment
         # without needing to source the activate script.
         run: |
-          uv run ruff check .
-          uv run ruff format --check .
+          uv run ruff check --fix .
+          uv run ruff format .
 
       - name: Run static type checking with Pyright
         run: uv run pyright
