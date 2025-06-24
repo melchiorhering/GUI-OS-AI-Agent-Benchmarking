@@ -12,7 +12,7 @@ from src.benchmark.utils import generate_port_pool
 # Define constants for port generation
 PORT_KEYS = ["ssh", "vnc", "fastapi", "jupyter"]
 START_PORT = 60000
-DEFAULT_PROMPT_FILE = Path("src/prompts/task.yaml")
+DEFAULT_PROMPT_FILE = Path("prompts/task.yaml")
 DEFAULT_TASK_INDEX_PATH = Path("src/benchmark/evaluation_examples/test_one.json")
 DEFAULT_TASKS_ROOT_DIR = Path("src/benchmark/evaluation_examples/examples")
 DEFAULT_RESULTS_ROOT_DIR = Path("results")
