@@ -12,7 +12,7 @@ src/docker/boot
 src/docker/sandboxes
 !src/docker/vms/README.md
 
-Spider/
+Spider2-V/
 
 # Python
 __pycache__/
