@@ -92,7 +92,8 @@ extend-exclude = [
     "dist",
     "node_modules",
     "venv",
-    "./src/agent/tools/models/",
+    "src/agent/tools/models/",
+    "src/benchmark/evaluation_examples",
 ]
 # In addition to the standard set of inclusions, include `.ipynb` files.
 extend-include = ["*.ipynb"]
