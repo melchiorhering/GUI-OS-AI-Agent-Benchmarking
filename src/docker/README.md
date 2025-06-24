@@ -292,6 +292,17 @@ You can also check the script-specific logs in `~/.local/share/jupyter-kg-logs/`
       2.  Uncomment the line `WaylandEnable=false`.
       3.  Save the file and restart with `sudo systemctl restart gdm3`.
 
+
+#### IMPORTANT FOR USING X11:
+There seems to be bug in X11 that makes the screen go black with a black crosshair as mouse, more info on this [Reddit](https://www.reddit.com/r/Ubuntu/comments/1d4k9uj/comment/ln5r9zb/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1) post
+This is even a problem with Ubuntu 24.04; to solve it, edit the file /etc/pam.d/login:
+```sh
+sudo nano /etc/pam.d/login
+
+# and comment this line:
+session optional pam_lastlog.so
+```
+
 ---
 
 ## 7 · Installed packages recap

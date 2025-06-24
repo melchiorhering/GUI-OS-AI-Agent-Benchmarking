@@ -11,7 +11,7 @@ import pyautogui
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image, ImageDraw, ImageFont, ImageGrab
-
+import numpy as np
 from src.pyxcursor import Xcursor
 from src.recording import (
     recorded_actions,
@@ -129,6 +129,7 @@ def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Opt
             img = Image.open(filepath)
         elif method == "pillow":
             img = ImageGrab.grab()
+
         else:
             raise ValueError(f"Unknown screenshot method: {method}")
 
@@ -199,7 +200,7 @@ def health_check():
 
 @app.get("/screenshot")
 async def screenshot_endpoint(method: str = Query(default="pyautogui", enum=["pyautogui", "pillow"])):
-    return take_screenshot(method=method)
+    return take_screenshot(method=metho)
 
 
 @app.get("/record")
