@@ -114,7 +114,7 @@ def get_multi_patch_labels(image_processor, image, bbox_gt):
     Args:
         image_processor: the image processor
         image: the image in PIL format
-        bbox_gt: the bounding box in the format of (x_min, y_min, x_max, y_max) [0,1]
+        bbox_gt: the bounding box in the format of (x_min, y_min, x_max, y_max) [0,1].
     """
     if len(image) != 1:
         raise ValueError(f"Expected 1 image, got {len(image)}")
@@ -515,10 +515,7 @@ class LazySupervisedDataset(Dataset):
         coordinates = [coordinates] if len(coordinates) > 0 else [None]
 
         # process multi_patch_labels
-        if len(multi_patch_labels) > 0:
-            multi_patch_labels = [torch.stack(multi_patch_labels)]
-        else:
-            multi_patch_labels = [None]
+        multi_patch_labels = [torch.stack(multi_patch_labels)] if len(multi_patch_labels) > 0 else [None]
 
         data_dict = {
             "input_ids": input_ids,  # tensor(bs x seq_len)

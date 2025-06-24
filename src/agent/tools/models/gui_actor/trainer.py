@@ -276,7 +276,7 @@ class AGUVISTrainer(Trainer):
             decay_parameters = [name for name in decay_parameters if "bias" not in name]
 
             new_parameters = []
-            for name, param in opt_model.named_parameters():
+            for name, _param in opt_model.named_parameters():
                 if ("pointer_head" in name) or ("embed_tokens" in name):
                     new_parameters.append(name)
             rank0_print(f"new_parameters: {len(new_parameters)}")

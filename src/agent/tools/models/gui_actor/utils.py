@@ -62,7 +62,7 @@ def draw_point(image: Image.Image, point: list, color=None):
 
 
 def draw_bbox(image: Image.Image, bbox: list, color=None):
-    """bbox is in the format of [x1, y1, x2, y2]"""
+    """Bbox is in the format of [x1, y1, x2, y2]."""
     if isinstance(color, str):
         try:
             color = ImageColor.getrgb(color)
@@ -92,7 +92,4 @@ def do_boxes_overlap(box1, box2):
     # Check for no overlap
     if x1_max < x2_min or x2_max < x1_min:
         return False
-    if y1_max < y2_min or y2_max < y1_min:
-        return False
-
-    return True
+    return not (y1_max < y2_min or y2_max < y1_min)

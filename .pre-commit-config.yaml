@@ -28,13 +28,14 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.0
     hooks:
+        # Run the formatter.
+      - id: ruff-format
+        name: ruff-formatter
       # Run the linter and automatically fix issues.
       - id: ruff
         name: ruff-linter
-        args: [--fix, --exit-non-zero-on-fix]
-      # Run the formatter.
-      - id: ruff-format
-        name: ruff-formatter
+        args: [--fix, --unsafe-fixes]
+
 
   # Pyright for static type checking, installed with uv.
   - repo: https://github.com/RobertCraigie/pyright-python

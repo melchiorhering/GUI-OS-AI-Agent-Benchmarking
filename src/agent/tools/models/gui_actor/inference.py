@@ -15,7 +15,9 @@ class ForceFollowTokensLogitsProcessor(LogitsProcessor):
     As long as forced tokens remain in the queue, force them in the output.
     """
 
-    def __init__(self, token_a_id, forced_sequence=[DEFAULT_POINTER_PAD_TOKEN, DEFAULT_POINTER_END_TOKEN]):
+    def __init__(self, token_a_id, forced_sequence=None):
+        if forced_sequence is None:
+            forced_sequence = [DEFAULT_POINTER_PAD_TOKEN, DEFAULT_POINTER_END_TOKEN]
         super().__init__()
         self.token_a_id = token_a_id
         self.forced_sequence = forced_sequence  # list of token IDs, e.g. [B_id, C_id]
@@ -61,7 +63,7 @@ def get_prediction_region_point(
     2. Divide connected patches into different regions
     3. Calculate the average activation value for each region
     4. Select the region with the highest average activation value
-    5. Return the center point of that region as the final prediction point
+    5. Return the center point of that region as the final prediction point.
     """
     # Get patches with activation values greater than a certain proportion of the maximum activation value as activated patches
     # Get the highest activation value and threshold
@@ -99,7 +101,7 @@ def get_prediction_region_point(
             # Check 4 adjacent directions
             for dy, dx in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 ny, nx = cy + dy, cx + dx
-                n_idx = ny * n_width + nx
+                ny * n_width + nx
 
                 # Check if this adjacent point is in the topk list
                 for j, (ty, tx, t_idx) in enumerate(topk_coords):
@@ -197,7 +199,7 @@ def inference(conversation, model, tokenizer, data_processor, logits_processor=N
                 },
             ],
         },
-    ]
+    ].
     """
     if logits_processor is None:
         logits_processor = ForceFollowTokensLogitsProcessor(
