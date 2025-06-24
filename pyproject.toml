@@ -43,6 +43,11 @@ dependencies = [
 [dependency-groups]
 dev = ["pre-commit>=4.2.0", "ruff"]
 
+classifiers = ["Programming Language :: Python :: 3.12"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 # In addition to the standard set of inclusions, include `.pyw` files.
