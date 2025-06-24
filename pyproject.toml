@@ -53,13 +53,25 @@ dependencies = [
     "matplotlib>=3.10.3",
     "seaborn>=0.13.2",
     "scipy>=1.15.3",
-    "flash-attn>=2.8.0.post2",
     "statsmodels>=0.14.4",
 ]
 
 # Optional dependencies (for dev, test, etc.) use the standard 'project.optional-dependencies' table.
 [project.optional-dependencies]
 dev = ["ruff", "pytest", "pyright", "commitizen", "pre-commit>=4.2.0"]
+
+# This new section fixes the build error by explicitly telling Hatch
+# where to find your package's source code.
+[tool.hatch.build.targets.wheel]
+# The error "Unable to determine which files to ship" occurs because Hatch
+# cannot find a source directory named 'automating_ds_de_workflows'.
+# This configuration tells it where to look.
+#
+# Please verify this path matches your project structure.
+# - If your code is in 'src/automating_ds_de_workflows', this is correct.
+# - If your code is in a root folder like 'automating_ds_de_workflows',
+#   change this to: packages = ["automating_ds_de_workflows"]
+packages = ["src/automating_ds_de_workflows"]
 
 
 [tool.ruff]
