@@ -1,27 +1,28 @@
+import logging
+import os
 import threading
 import time
 from datetime import datetime, timezone
+from pathlib import Path
+from typing import Dict
 
+import cv2
 import numpy as np
 import pyautogui
-from pynput import keyboard, mouse
 from PIL import Image, ImageGrab
-import cv2
-from typing import Dict
+from pynput import keyboard, mouse
+
 from src.utils import flush_typing_sequence
-from pathlib import Path
-import os
-import logging
 
 # Get logger from main app
 logger = logging.getLogger("SandboxServer")
-if not logger.handlers: # Fallback if logger not yet configured in main
+if not logger.handlers:  # Fallback if logger not yet configured in main
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger("SandboxServer")
 
 
 # ───────────────────── Global State for Action Recording ─────────────────────
-recording = False # Controls action recording
+recording = False  # Controls action recording
 recorded_actions = []
 _mouse_listener = None
 _keyboard_listener = None
@@ -36,7 +37,7 @@ video_recording_state = {
     "recording_thread": None,
     "output_filepath": None,
     "fps": 10,  # Frames per second for the video capture
-    "codec": "mp4v", # Codec for MP4 (e.g., "mp4v", "XVID", "MJPG")
+    "codec": "mp4v",  # Codec for MP4 (e.g., "mp4v", "XVID", "MJPG")
 }
 
 # ───────────────────── Shared Resources (from main.py context) ─────────────────────
@@ -44,9 +45,10 @@ video_recording_state = {
 # We'll pass them in or make them accessible globally if possible.
 # For simplicity, let's make them global in this module, set by an init function.
 shared_dir = Path(os.getenv("SHARED_DIR", "/mnt/container"))
-cursor = None # Will be set by init_recording_module
-screen_width = 1920 # Will be set by init_recording_module
-screen_height = 1080 # Will be set by init_recording_module
+cursor = None  # Will be set by init_recording_module
+screen_width = 1920  # Will be set by init_recording_module
+screen_height = 1080  # Will be set by init_recording_module
+
 
 def init_recording_module(s_dir: Path, cur, s_width: int, s_height: int):
     """Initializes global variables used by recording functions."""
@@ -115,7 +117,7 @@ def start_action_recording():
         return {"status": "already_recording_actions"}
 
     recording = True
-    recorded_actions.clear() # Clear previous actions
+    recorded_actions.clear()  # Clear previous actions
     _recording_thread = threading.Thread(target=_record_user_actions, daemon=True)
     _recording_thread.start()
     logger.info("Action recording started.")
@@ -139,13 +141,14 @@ def stop_action_recording():
         _keyboard_listener.stop()
         _keyboard_listener = None
 
-    flush_typing_sequence(recorded_actions, _typing_buffer) # Ensure last typing is flushed
+    flush_typing_sequence(recorded_actions, _typing_buffer)  # Ensure last typing is flushed
 
     logger.info(f"Action recording stopped. Captured {len(recorded_actions)} actions.")
     return {"status": "action_recording_stopped", "actions": recorded_actions.copy()}
 
 
 # ───────────────────── Screen Recording Functions ─────────────────────
+
 
 def _record_screen_loop_internal():
     """Captures screen frames and writes them to a video file.
@@ -173,7 +176,7 @@ def _record_screen_loop_internal():
                     frame,
                     (adjusted_x - box_half_size, adjusted_y - box_half_size),
                     (adjusted_x + box_half_size, adjusted_y + box_half_size),
-                    (0, 0, 255), # Red in BGR
+                    (0, 0, 255),  # Red in BGR
                     2,
                 )
 
@@ -190,7 +193,7 @@ def _record_screen_loop_internal():
                     if cursor_arr is not None:
                         cursor_img_pil = Image.fromarray(cursor_arr)
 
-                        if cursor_img_pil.mode == 'RGBA':
+                        if cursor_img_pil.mode == "RGBA":
                             cursor_img_cv = cv2.cvtColor(np.array(cursor_img_pil), cv2.COLOR_RGBA2BGR)
                             alpha_channel = cursor_img_pil.split()[-1]
                             alpha_np = np.array(alpha_channel) / 255.0
@@ -274,7 +277,7 @@ def stop_screen_recording() -> Dict[str, str]:
 
     video_recording_state["is_recording"] = False
     if video_recording_state["recording_thread"]:
-        video_recording_state["recording_thread"].join() # Wait for thread to finish
+        video_recording_state["recording_thread"].join()  # Wait for thread to finish
         logger.info("Screen recording thread joined.")
 
     output_path = video_recording_state["output_filepath"]
@@ -283,4 +286,7 @@ def stop_screen_recording() -> Dict[str, str]:
     video_recording_state["recording_thread"] = None
 
     logger.info(f"Screen recording stopped. File: {output_path}")
-    return {"status": "screen_recording_stopped", "filepath": str(output_path.relative_to(shared_dir)) if output_path else None}
+    return {
+        "status": "screen_recording_stopped",
+        "filepath": str(output_path.relative_to(shared_dir)) if output_path else None,
+    }

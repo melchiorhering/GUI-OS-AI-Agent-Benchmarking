@@ -57,8 +57,8 @@ class Xcursor:
         if not display:
             try:
                 display = os.environ["DISPLAY"].encode("utf-8")
-            except KeyError:
-                raise Exception("$DISPLAY not set.")
+            except KeyError as e:
+                raise Exception("$DISPLAY not set.") from e
 
         # XFixeslib = ctypes.CDLL('libXfixes.so')
         XFixes = ctypes.util.find_library("Xfixes")
@@ -86,7 +86,7 @@ class Xcursor:
             self.display = self.xlib.XOpenDisplay(display)  # (display) or (None)
 
     def argbdata_to_pixdata(self, data, len):
-        if data == None or len < 1:
+        if data is None or len < 1:
             return None
 
         # Create byte array
