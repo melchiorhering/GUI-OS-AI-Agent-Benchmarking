@@ -99,8 +99,10 @@ Ensure you have the following dependencies installed on your system:
 The main entry point for running experiments is the orchestrator script. You can run all tasks sequentially or a specific subset.
 
 ```bash
+cd src
+
 # Example: Run all tasks defined in the jupyter test index sequentially
-uv run python src/orchestrator.py \
+uv run cli.py \
     --task-index /path/to/your/task_list.json \
     --tasks-root /path/to/your/task_definitions/ \
     --results-root results/
