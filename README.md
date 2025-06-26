@@ -123,4 +123,4 @@ This project is licensed under the MIT License. See the [LICENSE](https://openso
 
 This repository is the official implementation for the paper **"Enhancing Multimodal GUI AI-Agent Benchmarking."** For a detailed explanation of the methodology, experimental setup, and results, please refer to the paper.
 
-[**➡️ Read the full paper here (PDF)**](./paper.pdf)
+[**➡️ Read the full paper (PDF)**](./paper.pdf)
