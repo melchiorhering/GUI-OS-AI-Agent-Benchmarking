@@ -1,7 +1,9 @@
-# AI Agents with Smolagents
+# 🤖 AI Agents with Smolagents
 In this directory some tools, callbacks abstractions are created for makeing the GUI based setup work with the CodeAgent, based off the [Smolagents](https://github.com/huggingface/smolagents) package.
 Read more about Smolagents [here](https://huggingface.co/docs/smolagents/en/index).
 
+
+## In Development
 1. [GUI Actor](https://github.com/microsoft/GUI-Actor)
 2. **RAG**
    1. [Qdrant](https://qdrant.tech/)
