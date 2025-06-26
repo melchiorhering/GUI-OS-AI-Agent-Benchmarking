@@ -75,6 +75,8 @@ jobs:
         with:
           app-id: 1465866
           private-key: ${{ secrets.HERING_GITHUB_APP }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.repository }}
 
       - name: Get GitHub App User ID
         id: get-user-id
