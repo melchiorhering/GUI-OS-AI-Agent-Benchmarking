@@ -46,7 +46,7 @@ repos:
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
-        args: []
+        args: [--verbose]
         # You can add arguments here to specify types, scopes, etc.
         # For example: args: ["--types", "feat,fix,chore,docs,refactor,revert,style,test,ci,build,perf"]
 
