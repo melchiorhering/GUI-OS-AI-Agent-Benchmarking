@@ -62,33 +62,30 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
-      # - uses: actions/create-github-app-token@v2
-      #   id: app-token
-      #   with:
-      #     app-id: 1465866
-      #     private-key: ${{ secrets.HERING_GITHUB_APP }}
-      #     owner: ${{ github.repository_owner }}
-      #     repositories: ${{ github.repository_name }}
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: 1465866
+          private-key: ${{ secrets.HERING_GITHUB_APP }}
+          owner: ${{ github.repository_owner }}
+          permissions-contents: write
+          permissions-pull-requests: write
 
-      # - name: Get GitHub App User ID
-      #   id: get-user-id
-      #   run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
-      #   env:
-      #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      - name: Get GitHub App User ID
+        id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
-      # - run: |
-      #     git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
-      #     git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+      - run: |
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
 
       - name: Run Release Please
         uses: googleapis/release-please-action@v4
         with:
           # Using a PAT is more robust for triggering other workflows if needed
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           # This should be 'python' if you are using hatch-vcs as discussed
           release-type: simple
