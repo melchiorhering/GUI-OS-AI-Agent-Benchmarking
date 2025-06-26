@@ -66,10 +66,9 @@ jobs:
 
     steps:
       - name: Run Release Please
-        uses: google-github-actions/release-please-action@v4
+        uses: googleapis/release-please-action@v4
         with:
           # Using a PAT is more robust for triggering other workflows if needed
           token: secrets.GITHUB_TOKEN
           # This should be 'python' if you are using hatch-vcs as discussed
-          release-type: python
-          package-name: automating-ds-de-workflows
+          release-type: simple
