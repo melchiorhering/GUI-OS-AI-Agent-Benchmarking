@@ -3,7 +3,7 @@ In this directory some tools, callbacks abstractions are created for makeing the
 Read more about Smolagents [here](https://huggingface.co/docs/smolagents/en/index).
 
 
-## In Development
+## 👀 In Development
 1. [GUI Actor](https://github.com/microsoft/GUI-Actor)
 2. **RAG**
    1. [Qdrant](https://qdrant.tech/)
