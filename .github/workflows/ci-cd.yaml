@@ -1,0 +1,75 @@
+name: Test and Release
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # =======================================================
+  #  First Job: Run all tests, linting, and type checking
+  # =======================================================
+  test:
+    name: Package Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - "3.11"
+          - "3.12"
+      # Don't cancel all jobs if one Python version fails
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv and set the python version
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --system --all-extras
+
+      - name: Lint with Ruff
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+
+      - name: Run static type checking with Pyright
+        run: uv run pyright
+
+      # TODO: Uncomment and add your pytest command here
+      # - name: Run tests with Pytest
+      #   run: uv run pytest
+
+  # =================================================================
+  #  Second Job: Create a Release PR or a final Release.
+  #  This job will ONLY run if the 'test' job above succeeds.
+  # =================================================================
+  release-please:
+    # This job depends on the successful completion of the 'test' job
+    needs: test
+
+    # This 'if' condition is crucial. It ensures this job only runs on
+    # pushes to the 'main' branch, not on pull requests.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Run Release Please
+        uses: google-github-actions/release-please-action@v4
+        with:
+          # Using a PAT is more robust for triggering other workflows if needed
+          token: secrets.GITHUB_TOKEN
+          # This should be 'python' if you are using hatch-vcs as discussed
+          release-type: python
+          package-name: automating-ds-de-workflows
