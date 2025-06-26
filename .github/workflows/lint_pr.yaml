@@ -1,4 +1,4 @@
-# .github/workflows/lint_pr.yml
+# .github/workflows/lint_pr.yaml
 name: Lint PR Title
 
 on:
