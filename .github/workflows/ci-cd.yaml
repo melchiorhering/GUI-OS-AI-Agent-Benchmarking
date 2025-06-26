@@ -58,7 +58,6 @@ jobs:
     # This job depends on the successful completion of the 'test' job
     needs: test
 
-    # This 'if' condition is crucial. It ensures this job only runs on
     # pushes to the 'main' branch, not on pull requests.
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
