@@ -23,9 +23,9 @@ stores.to_sql('stores', connection, if_exists='replace', index=False)
 
 ```
 query = """
-SELECT 
+SELECT
     *
-FROM 
+FROM
     products
 WHERE
     model_year = 2019

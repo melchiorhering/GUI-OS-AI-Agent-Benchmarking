@@ -1,4 +1,4 @@
-We need to get this code running smoothly. 
+We need to get this code running smoothly.
 1. Click "Run > Restart the kernel and run all cells" on the top of the page.
 2. Click "Restart" in the pop-up window.
 3. Then, we found the error ModuleNotFoundError: No module named 'nltk'. we need to add this package in terminal.
@@ -9,16 +9,16 @@ pip install nltk
 ```
 6. Switch back to Chrome, and click "Restart the kernel and run all cells".
 7. In the pop-up window, click "Restart".
-8. We found a new error, 
+8. We found a new error,
   ```
-LookupError: 
+LookupError:
 **********************************************************************
   Resource stopwords not found.
   Please use the NLTK Downloader to obtain the resource:
 
   >>> import nltk
   >>> nltk.download('stopwords')
-  
+
   For more information see: https://www.nltk.org/data.html
 
   Attempted to load corpora/stopwords

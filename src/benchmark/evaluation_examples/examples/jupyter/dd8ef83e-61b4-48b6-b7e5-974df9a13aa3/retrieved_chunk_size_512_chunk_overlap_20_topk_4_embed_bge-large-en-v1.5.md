@@ -59,6 +59,3 @@ Param
 1 (up) or 1 (down)
 
 - Defined in packages/filebrowser/lib/listing.d.ts:248
-
-
-

@@ -51,6 +51,3 @@ Documentation Content:
 `Private`\_sortedItems
 
 \_sortedItems:any- Defined in packages/filebrowser/lib/listing.d.ts:350
-
-
-

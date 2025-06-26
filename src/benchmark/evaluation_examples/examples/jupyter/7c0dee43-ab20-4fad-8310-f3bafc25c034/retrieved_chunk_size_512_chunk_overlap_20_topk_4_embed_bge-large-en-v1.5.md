@@ -95,6 +95,3 @@ Returns string
 * Defined in packages/extensionmanager/lib/model.d.ts:174
 * setquery(value): void
 * #### Parameters
-
-
-

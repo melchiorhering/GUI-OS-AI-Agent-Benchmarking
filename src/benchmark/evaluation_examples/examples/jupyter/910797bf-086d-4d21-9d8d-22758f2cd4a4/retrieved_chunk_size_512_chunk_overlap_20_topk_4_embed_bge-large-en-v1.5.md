@@ -146,6 +146,3 @@ GitHubJupyter* Preparing search index...
 @jupyterlab@jupyterlabnotebookNotebookAdapter
 Class NotebookAdapter
 =====================
-
-
-

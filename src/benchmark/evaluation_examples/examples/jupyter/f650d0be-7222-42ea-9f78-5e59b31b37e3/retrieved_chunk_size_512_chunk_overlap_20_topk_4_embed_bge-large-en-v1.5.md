@@ -46,6 +46,3 @@ Inherited from Widget.setHidden
 setNotebooksFirstSorting* setNotebooksFirstSorting(isEnabled): void
 * Update the setting to sort notebooks above files.
 This sorts the items again if the internal value is modified.
-
-
-

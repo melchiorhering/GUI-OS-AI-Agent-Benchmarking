@@ -340,6 +340,3 @@ Side
 replace
 Selection
 r
-
-
-

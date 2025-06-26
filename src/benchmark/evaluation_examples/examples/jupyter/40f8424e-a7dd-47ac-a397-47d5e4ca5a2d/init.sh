@@ -83,5 +83,3 @@ nohup code . Categorical-Data.ipynb >> "$VSCODE_LOG" 2>&1 &
 echo "Giving VSCode 5 seconds to initialize..."
 sleep 5
 echo "✅ Setup complete. VSCode should be running in the background."
-
-

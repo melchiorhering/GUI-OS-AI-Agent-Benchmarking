@@ -48,6 +48,3 @@ Parameters
 	
 	Changed data#### Returns Promise
 * Defined in packages/notebook/lib/notebooklspadapter.d.ts:89
-
-
-
