@@ -33,7 +33,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --system --all-extras
+        run: uv sync --all-extras
 
       - name: Lint with Ruff
         run: |
