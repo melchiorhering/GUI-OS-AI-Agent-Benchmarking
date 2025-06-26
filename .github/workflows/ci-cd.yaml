@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   # =======================================================
   #  First Job: Run all tests, linting, and type checking
@@ -69,7 +70,7 @@ jobs:
           app-id: 1465866
           private-key: ${{ secrets.HERING_GITHUB_APP }}
           permission-contents: write
-          permissions-pull-requests: write
+          permission-pull-requests: write
 
       - name: Get GitHub App User ID
         id: get-user-id
