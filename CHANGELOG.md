@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/melchiorhering/Automating-DS-DE-Workflows/compare/v1.0.0...v1.0.1) (2025-06-26)
+
+
+### Bug Fixes
+
+* removing comments ([17b2cf5](https://github.com/melchiorhering/Automating-DS-DE-Workflows/commit/17b2cf5f3ff4f23dbc6a4a9ae706cb8db98d277e))
+
 ## 1.0.0 (2025-06-26)
 
 
