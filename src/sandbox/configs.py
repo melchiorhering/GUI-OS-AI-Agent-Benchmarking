@@ -1,16 +1,11 @@
 # src/sandbox/config.py
 from __future__ import annotations
 
-import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Union
 
 from .errors import VMCreationError
-
-# ────────────────────────────── Logging Setup ──────────────────────────────
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 # ────────────────────────────── Configs ──────────────────────────────
@@ -35,7 +30,7 @@ class VMConfig:
     # ──────────────── Network Configuration ────────────────
     host_vnc_port: int = 8006  # Host port for VNC access
     host_ssh_port: int = 2223  # Host port for SSH access
-    extra_ports: Dict[int, int] = field(default_factory=dict)  # Additional port mappings
+    ports: dict = field(default_factory=dict)
 
     # ──────────────── Paths and Directories ────────────────
     root_dir: Path = Path("docker")  # Root directory for all VM resources
@@ -83,6 +78,13 @@ class VMConfig:
         if not self.base_data.exists():
             raise VMCreationError("Missing base data.img")
 
+        # Map core services ports
+        # These are set here to establish defaults but can be overridden
+        # in subclasses if needed, before the final, non-overwritable
+        # ports are set.
+        self.ports[8006] = self.host_vnc_port
+        self.ports[22] = self.host_ssh_port
+
 
 # ────────────────────────────── Config ──────────────────────────────
 @dataclass
@@ -108,12 +110,25 @@ class SandboxVMConfig(VMConfig):
     def __post_init__(self):
         super().__post_init__()  # Critical to call this first
 
-        # Map core service ports from guest to host
-        self.extra_ports[8765] = self.host_sandbox_fastapi_server_port
-        self.extra_ports[8888] = self.host_sandbox_jupyter_kernel_port  # Set in vm configuration
+        # FIX: To prevent overwrites, first, we create a new dictionary with
+        # the user-defined additional ports. Then, we merge the essential ports
+        # into it, ensuring they overwrite any conflicting keys from additional_ports.
 
-        # Add any user-defined additional ports
-        self.extra_ports.update(self.additional_ports)
+        final_ports = {}
+
+        # Start with user-defined ports
+        final_ports.update(self.additional_ports)
+
+        # Now, overwrite with the essential, non-negotiable ports
+        essential_ports = {
+            8006: self.host_vnc_port,
+            22: self.host_ssh_port,
+            8765: self.host_sandbox_fastapi_server_port,
+            8888: self.host_sandbox_jupyter_kernel_port,
+        }
+        final_ports.update(essential_ports)
+
+        self.ports = final_ports
 
         # The SandboxVMManager._prepare_shared_mount method is responsible for creating
         # and mounting the host's self.host_container_shared_dir to this guest path.

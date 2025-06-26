@@ -110,8 +110,8 @@ class VMManager:
 
         # Combine ports for validation
         all_ports = [self.cfg.host_vnc_port, self.cfg.host_ssh_port]
-        if self.cfg.extra_ports:
-            all_ports.extend(self.cfg.extra_ports.values())
+        if self.cfg.ports:
+            all_ports.extend(self.cfg.ports.values())
 
         for port in all_ports:
             if not (1 <= port <= 65535):
@@ -191,13 +191,6 @@ class VMManager:
             Mount(target="/shared", source=str(self.cfg.host_container_shared_dir), type="bind"),
         ]
 
-        # FIX 3: Ensure all port keys are strings with the protocol
-        ports = {
-            f"{self.cfg.host_vnc_port}/tcp": self.cfg.host_vnc_port,
-            "22/tcp": self.cfg.host_ssh_port,
-            **{f"{p}/tcp": p for p in self.cfg.extra_ports.values()},
-        }
-
         env = {
             "RAM_SIZE": self.cfg.vm_ram,
             "CPU_CORES": str(self.cfg.vm_cpu_cores),
@@ -211,7 +204,7 @@ class VMManager:
             name=self.cfg.container_name,
             environment=env,
             mounts=mounts,
-            ports=ports,  # This now has the correct format
+            ports=self.cfg.ports,
             devices=["/dev/kvm", "/dev/net/tun"],
             cap_add=["NET_ADMIN"],
             detach=True,
