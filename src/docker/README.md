@@ -117,7 +117,7 @@ If you want to skip the OS installation, you can download a pre-built base image
 1.  **Download the image files:**
     You can use the provided Python script:
     ```bash
-    python3 base_download.py
+    uv run base_download.py # --args
     ```
     Or, if you have the `vms` directory configured as a GIT submodule:
     ```sh
@@ -209,15 +209,15 @@ For the very first boot after installation, you must use the web-based noVNC con
     sudo apt install -y openssh-server
 
     # Enable the sshd service to start on boot
-    sudo systemctl enable sshd
+    sudo systemctl enable sshd # or ssh
 
     # Start the service immediately
-    sudo systemctl start sshd
+    sudo systemctl start sshd # or ssh
     ```
 
 4.  **Verify SSH is running.** You can check its status to confirm it's active:
     ```bash
-    sudo systemctl status sshd
+    sudo systemctl status sshd # or ssh
     ```
     With the SSH server now running on port 22 inside the VM (and mapped to port 2222 on your host), you can proceed with all other steps from your local machine's terminal.
 

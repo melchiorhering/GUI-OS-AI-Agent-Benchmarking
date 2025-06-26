@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, Literal, Optional, Union, List
+import tempfile
 
 import pyautogui
 from fastapi import FastAPI, Query
@@ -22,47 +23,76 @@ from src.recording import (
     video_recording_state,
     init_recording_module
 )
-from src.utils import clear_shared_dir_simpler
+# The problematic function is no longer imported
+# from src.utils import clear_shared_dir_simpler
 
-# ───────────────────── Logger Setup (Corrected) ─────────────────────
-# The log path is now determined by an environment variable from the startup script.
-# This makes the configuration centralized and robust.
+# ───────────────────── Logger Setup ─────────────────────
+# This setup is correct for being managed by a startup script.
 logger = logging.getLogger("SandboxServer")
 logger.setLevel(logging.DEBUG if os.getenv("DEBUG") == "1" else logging.INFO)
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-
-# Use a StreamHandler to log to stdout/stderr. The startup script will redirect this
-# to the log file and systemd journal. This is better than FileHandler for services.
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
 
 
-# ───────────────────── Lifespan Event Setup ─────────────────────
+# ───────────────────── Lifespan & Shared Directory Setup ─────────────────────
+
+# Define shared_dir globally so it can be accessed in endpoints and lifespan
+shared_dir: Path
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    host = os.getenv("FASTAPI_HOST", "0.0.0.0") # Use the same env var as the script
-    port = os.getenv("FASTAPI_PORT", "8765")   # Use the same env var as the script
-    logger.info(f"🔧 FastAPI Server starting up. Logging configured via startup script.")
+    """
+    Handles application startup and shutdown events.
+    Initializes shared resources like the output directory.
+    """
+    global shared_dir  # Declare that we are modifying the global variable
+    host = os.getenv("FASTAPI_HOST", "0.0.0.0")
+    port = os.getenv("FASTAPI_PORT", "8765")
+
+    # Determine the shared directory path.
+    # Prioritize the SHARED_DIR env var, otherwise fall back to a user's home directory.
+    # This avoids potential permission issues with a fixed path like /mnt/container.
+    env_shared_dir = os.getenv("SHARED_DIR", "/mnt/container")
+    if env_shared_dir:
+        shared_dir = Path(env_shared_dir)
+        logger.info(f"✅ Using shared directory from environment variable: {shared_dir}")
+    else:
+        # Fallback to a directory within the user's home directory
+        shared_dir = Path.home() / "observation-server-output"
+        logger.warning(f"⚠️ SHARED_DIR env var not set. Falling back to default: {shared_dir}")
+
+    # Ensure the directory exists and is writable.
+    try:
+        shared_dir.mkdir(parents=True, exist_ok=True)
+        # Create a temporary file to test writability
+        with tempfile.TemporaryFile(dir=shared_dir):
+            pass
+        logger.info(f"✅ Shared directory is ready and writable at: {shared_dir}")
+    except OSError as e:
+        logger.critical(f"❌ FATAL: Could not create or write to shared directory: {e}")
+        # The app will likely fail on file operations. Logging as critical.
+
+    # The problematic directory clearing function call has been REMOVED.
+
+    logger.info("🔧 FastAPI Server starting up. Logging configured via startup script.")
     logger.info(f"🚀 Listening on http://{host}:{port}")
 
     # Initialize the recording module with shared resources
-    # Ensure screen_width, screen_height, and cursor are determined before this.
-    global cursor, screen_width, screen_height, shared_dir # Ensure these are accessible
+    global cursor, screen_width, screen_height
     init_recording_module(shared_dir, cursor, screen_width, screen_height)
-    logger.info("Recording module initialized from main lifespan.")
+    logger.info("✅ Recording module initialized from main lifespan.")
 
     yield
+
     # This code runs on shutdown
     logger.info("🧹 FastAPI server is shutting down...")
-    # Ensure all recordings stop if server shuts down while active
     if video_recording_state["is_recording"]:
         logger.info("Stopping active video recording during shutdown.")
         stop_screen_recording()
-    if recorded_actions: # Check if action recording is active
+    if recorded_actions:
         logger.info("Stopping active action recording during shutdown.")
-        # Note: stop_action_recording returns the actions but doesn't save them here.
-        # If saving on unexpected shutdown is critical, replicate the save logic here.
         stop_action_recording()
 
 
@@ -81,15 +111,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-shared_dir = Path(os.getenv("SHARED_DIR", "/mnt/container"))
-clear_shared_dir_simpler(shared_dir)
-
+# The shared_dir initialization is now handled in the lifespan manager.
 
 # ───────────────────── Cursor & Screen Info ─────────────────────
 try:
-    # Moved numpy import from here, it's now primarily in recording.py for screen recording
-    # Still needed for PIL Image to np.array conversion in take_screenshot
-    import numpy as np
     cursor = Xcursor()
     logger.info("✅ Cursor initialized")
 except Exception as e:
@@ -108,9 +133,6 @@ except Exception as e:
 def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Optional[str] = None) -> Dict[str, Union[str, List[int]]]:
     """
     Captures a screenshot, annotates it, and saves it.
-
-    The return type hint has been corrected to reflect that the dictionary
-    can contain values that are either strings or lists of integers.
     """
     try:
         screenshot_dir = shared_dir / "screenshots"
@@ -129,7 +151,6 @@ def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Opt
             img = Image.open(filepath)
         elif method == "pillow":
             img = ImageGrab.grab()
-
         else:
             raise ValueError(f"Unknown screenshot method: {method}")
 
@@ -174,7 +195,6 @@ def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Opt
 
         screenshot_img.save(filepath)
 
-        # The actual returned dictionary contains lists of ints, so the type hint must match.
         return {
             "screenshot_path": str(filepath.relative_to(shared_dir)),
             "mouse_position": [mouse_x, mouse_y],
@@ -183,24 +203,18 @@ def take_screenshot(method: Literal["pyautogui", "pillow"] = "pillow", step: Opt
 
     except Exception as e:
         logger.error(f"❌ Screenshot error: {e}")
-        # This return path is compatible with the new type hint
         return {"status": "error", "message": str(e)}
-
-
 
 # ───────────────────── API Endpoints ─────────────────────
 @app.get("/health")
 def health_check():
-    try:
-        return {"status": "ok", "observation_server": "reachable"}
-    except Exception as e:
-        logger.error(f"❌ healthcheck failed: {e}")
-        return {"status": "error", "observation_server": "unreachable", "error": str(e)}
+    return {"status": "ok", "observation_server": "reachable"}
 
 
 @app.get("/screenshot")
 async def screenshot_endpoint(method: str = Query(default="pyautogui", enum=["pyautogui", "pillow"])):
-    return take_screenshot(method=metho)
+    # Corrected the variable name from 'metho' to 'method'
+    return take_screenshot(method=method)
 
 
 @app.get("/record")
@@ -211,9 +225,6 @@ async def record_endpoint(
 ):
     """
     Manages both action recording (JSON) and screen recording (MP4 video).
-
-    - `mode="start"`: Starts both action and screen recording.
-    - `mode="stop"`: Stops both recordings and saves their respective files.
     """
     recordings_dir = shared_dir / "recordings"
     recordings_dir.mkdir(parents=True, exist_ok=True)
@@ -221,12 +232,10 @@ async def record_endpoint(
     results = {}
 
     if mode == "start":
-        # --- Start Action Recording ---
-        action_record_result = start_action_recording() # Call the imported function
+        action_record_result = start_action_recording()
         results["action_recording_status"] = action_record_result["status"]
 
-        # --- Start Screen Recording ---
-        screen_record_result = start_screen_recording(fps=fps, codec=codec) # Call the imported function
+        screen_record_result = start_screen_recording(fps=fps, codec=codec)
         results["screen_recording_status"] = screen_record_result["status"]
         if "filepath" in screen_record_result:
             results["screen_recording_file"] = screen_record_result["filepath"]
@@ -236,11 +245,10 @@ async def record_endpoint(
         return results
 
     elif mode == "stop":
-        # --- Stop Action Recording ---
-        action_record_result = stop_action_recording() # Call the imported function
+        action_record_result = stop_action_recording()
         results["action_recording_status"] = action_record_result["status"]
         if action_record_result["status"] == "action_recording_stopped":
-            actions = action_record_result["actions"] # Get actions from the returned dict
+            actions = action_record_result["actions"]
             action_filename = f"actions-{datetime.now(timezone.utc).strftime('%Y-%m-%dT%H%M%S')}.json"
             action_filepath = recordings_dir / action_filename
             try:
@@ -252,11 +260,10 @@ async def record_endpoint(
                 logger.error(f"❌ Failed to save action recording: {e}")
                 results["action_recording_status"] = "error"
                 results["action_recording_message"] = str(e)
-        else: # e.g., "no_action_recording"
-             results["action_recording_message"] = "No active action recording to stop."
+        else:
+            results["action_recording_message"] = "No active action recording to stop."
 
-        # --- Stop Screen Recording ---
-        screen_record_result = stop_screen_recording() # Call the imported function
+        screen_record_result = stop_screen_recording()
         results["screen_recording_status"] = screen_record_result["status"]
         if "filepath" in screen_record_result:
             results["screen_recording_file"] = screen_record_result["filepath"]

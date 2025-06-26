@@ -1,99 +1,127 @@
 #!/bin/bash
+# --- 5. FastAPI Observation Server Startup Script ---
+# This script is designed to be run as a systemd service at startup.
+# It installs project dependencies using 'uv' and launches the FastAPI server.
+
+# Exit on any error, treat unset variables as an error, and prevent errors in pipelines from being masked.
 set -euo pipefail
 
-# This script starts the FastAPI observation server using the `fastapi run` command.
-# It's designed to be run as a systemd service, relying on the unit file for
-# DISPLAY and XAUTHORITY, which are essential for GUI operations.
+# --- Configuration ───────────────────────────────────────────────────────────
+# Network settings for the FastAPI application.
+readonly FASTAPI_HOST="0.0.0.0"
+readonly FASTAPI_PORT="8765"
 
-# --- Configuration ---
-FASTAPI_HOST="0.0.0.0"
-FASTAPI_PORT="8765"
 # The root directory of your FastAPI project.
-PROJECT_PATH="${HOME}/observation-server"
+readonly PROJECT_PATH="${HOME}/observation-server"
+# The virtual environment path, managed by 'uv'.
+readonly VENV_PATH="${PROJECT_PATH}/.venv"
+# The requirements file for 'uv sync'. Assumes pyproject.toml but can be changed.
+readonly REQ_FILE="pyproject.toml"
 
-# Log directory and file names
-LOG_DIR="/mnt/container/fastapi-observation-logs" # Dedicated log directory
-SCRIPT_LOG="startup.log"                          # Log for this script's execution
-SERVER_LOG="server.log"                           # Log for the FastAPI/Uvicorn server's output
+# Log directory and file names.
+readonly LOG_DIR="/mnt/container/fastapi-observation-logs"
+readonly SCRIPT_LOG_FILE="startup.log"
+readonly SERVER_LOG_FILE="fastapi_server_output.log"
 
-# XServer configuration - these should be set by the systemd unit file
-DISPLAY="${DISPLAY:-:0}"
-XAUTHORITY="${XAUTHORITY:-/run/user/1000/gdm/Xauthority}"
+# XServer configuration required for GUI automation (e.g., screenshots).
+# These are typically provided by the systemd unit file.
+export DISPLAY="${DISPLAY:-:0}"
+export XAUTHORITY="${XAUTHORITY:-/run/user/1000/gdm/Xauthority}"
 
-export DISPLAY XAUTHORITY
-
-# --- Prepare Logging ---
-# Exit if the log directory does not exist or we can't write to it.
-if ! mkdir -p "${LOG_DIR}" || [ ! -w "${LOG_DIR}" ]; then
-    echo "ERROR: Log directory ${LOG_DIR} is not accessible or writable. Exiting." >&2
+# --- [1/7] Prepare Logging Environment ───────────────────────────────────────
+mkdir -p "${LOG_DIR}"
+if [ ! -w "${LOG_DIR}" ]; then
+    echo "FATAL ERROR: Log directory ${LOG_DIR} is not writable. Exiting." >&2
     exit 1
 fi
 
-LOG_PATH="${LOG_DIR}/${SCRIPT_LOG}"
-SERVER_LOG_PATH="${LOG_DIR}/${SERVER_LOG}"
+readonly SCRIPT_LOG_PATH="${LOG_DIR}/${SCRIPT_LOG_FILE}"
+readonly SERVER_LOG_PATH="${LOG_DIR}/${SERVER_LOG_FILE}"
 
-# Redirect all script and server output to a log file AND systemd's journal.
-# The server's output will be captured by this as well.
-exec &> >(tee "${SERVER_LOG_PATH}")
+# Redirect all of this script's output (stdout and stderr) to its log file.
+exec >"${SCRIPT_LOG_PATH}" 2>&1
 
 echo "──────────────────────────────────────────────────"
 echo "🚀 FastAPI Observation Server Startup Script"
-echo "Timestamp: $(date)"
-echo "User: $(whoami)"
-echo "→ Project Path:      ${PROJECT_PATH}"
-echo "→ Log Directory:     ${LOG_DIR}"
-echo "→ API Host:          ${FASTAPI_HOST}"
-echo "→ API Port:          ${FASTAPI_PORT}"
-echo "→ DISPLAY:           ${DISPLAY}"
-echo "→ XAUTHORITY:        ${XAUTHORITY}"
+echo "Timestamp:           $(date)"
+echo "User:                $(whoami)"
+echo "──────────────────────────────────────────────────"
+echo "Project Path:        ${PROJECT_PATH}"
+echo "Virtual Env (uv):    ${VENV_PATH}"
+echo "Script Log File:     ${SCRIPT_LOG_PATH}"
+echo "Server Output Log:   ${SERVER_LOG_PATH}"
+echo "API Host:            ${FASTAPI_HOST}"
+echo "API Port:            ${FASTAPI_PORT}"
+echo "DISPLAY:             ${DISPLAY}"
+echo "XAUTHORITY:          ${XAUTHORITY}"
 echo "──────────────────────────────────────────────────"
 
-# --- Prerequisite Check ---
-echo "🛠️  Checking for project directory at '${PROJECT_PATH}'..."
-if [ ! -d "${PROJECT_PATH}" ]; then
-    echo "❌ Project directory not found at '${PROJECT_PATH}'! Please ensure the path is correct."
+# --- [2/7] Change Directory & Validate Environment ───────────────────────────
+echo "[2/7] Validating environment..."
+if ! cd "${PROJECT_PATH}"; then
+    echo "❌ FATAL: Project directory not found at '${PROJECT_PATH}'! Cannot continue."
     exit 1
 fi
+echo "--> Changed directory to ${PROJECT_PATH}"
 
-VENV_FASTAPI_EXEC="${PROJECT_PATH}/.venv/bin/fastapi"
-echo "🛠️  Checking if 'fastapi' command is available at '${VENV_FASTAPI_EXEC}'..."
-if ! [ -x "${VENV_FASTAPI_EXEC}" ]; then
-    echo "❌ 'fastapi' command not found or not executable at '${VENV_FASTAPI_EXEC}'."
-    echo "   Please ensure your dependencies (like fastapi-cli) are installed in the venv."
+if [ ! -f "main.py" ]; then
+    echo "❌ FATAL: main.py not found in project directory '${PROJECT_PATH}'!"
     exit 1
 fi
-echo "✅ 'fastapi' command is available: ${VENV_FASTAPI_EXEC}"
+if [ ! -f "${REQ_FILE}" ]; then
+    echo "❌ FATAL: Requirements file '${REQ_FILE}' not found for 'uv sync'!"
+    exit 1
+fi
+if [ ! -r "${XAUTHORITY}" ]; then
+    echo "❌ FATAL: XAUTHORITY file not found or not readable at '${XAUTHORITY}'!"
+    exit 1
+fi
+if ! command -v uv &>/dev/null; then
+    echo "❌ FATAL: 'uv' command not found. Please ensure it is installed."
+    exit 1
+fi
+echo "✅ Environment validation passed."
 
-# --- Configure X Server Permissions for GUI Automation ---
-# This is critical for allowing the FastAPI server to take screenshots.
+# --- [3/7] Install/Sync Dependencies with UV ─────────────────────────────────
+echo "[3/7] Installing/syncing dependencies with 'uv'..."
+# This command creates the .venv if it doesn't exist and syncs dependencies
+# from pyproject.toml (or requirements.txt)
+uv sync --no-cache
+echo "✅ Dependencies are in sync."
+
+# --- [4/7] Configure X Server Permissions for GUI ────────────────────────────
+echo "[4/7] Configuring X server permissions for GUI automation..."
+# This allows the server to connect to the X display for screenshots.
 if [ -n "${DISPLAY}" ] && command -v xhost &>/dev/null; then
-    echo "🖼️  Attempting to grant local user access to the X server..."
-    # Allow the user running this script to connect to the X server.
-    xhost +SI:localuser:"$(whoami)" || echo "ℹ️  xhost command finished (non-critical errors are suppressed)."
+    # The '+SI:localuser:...' grants access only to the specified local user.
+    xhost +SI:localuser:"$(whoami)" || echo "ℹ️  xhost command finished (non-critical errors are common)."
     echo "✅ X server permissions updated."
 else
-    echo "⚠️  xhost command not found or DISPLAY is not set. Screenshots and GUI automation may fail."
+    echo "⚠️  xhost command not found or DISPLAY is not set. Screenshots will likely fail."
 fi
 
-# --- Clean Up Stale Processes ---
-echo "🧹 Killing any stale processes on port ${FASTAPI_PORT}..."
-# Use fuser to reliably kill processes using the target TCP port. This is more
-# robust than pkill, as it doesn't depend on the process name.
+# --- [5/7] Clean Up Stale Processes ───────────────────────────────────────────
+echo "[5/7] Killing any stale processes on port ${FASTAPI_PORT}..."
+# `fuser` finds and kills processes using a specific network port.
+# The `|| true` prevents the script from exiting if no process is found.
 fuser -k -n tcp "${FASTAPI_PORT}" || true
-echo "✅ Stale process cleanup attempt finished."
+echo "✅ Stale process cleanup finished."
 
-# --- Start FastAPI Server ---
-echo "📍 Changing directory to project path: '${PROJECT_PATH}'..."
-cd "${PROJECT_PATH}" || { echo "❌ Failed to change directory to ${PROJECT_PATH}"; exit 1; }
-echo "✅ Current working directory: $(pwd)"
+# --- [6/7] Start FastAPI Server ───────────────────────────────────────────────
+echo "[6/7] Starting FastAPI server..."
+echo "--> Server executable: '${VENV_PATH}/bin/fastapi'"
+echo "--> Server output will be redirected to: ${SERVER_LOG_PATH}"
 
-echo "🚀 Starting FastAPI server with the 'fastapi run' command..."
-# 'exec' replaces the shell process with the server process, which is a best practice for systemd.
-# The server's output (stdout/stderr) is already being redirected by the 'exec &>' at the top.
-exec "${VENV_FASTAPI_EXEC}" run main.py \
+# Use 'exec' to replace this script's process with the FastAPI server process.
+# We use the full path to the 'fastapi' executable created by 'uv'.
+# The server's output is redirected to its own log file.
+exec "${VENV_PATH}/bin/fastapi" run main.py \
     --host "${FASTAPI_HOST}" \
-    --port "${FASTAPI_PORT}"
+    --port "${FASTAPI_PORT}" \
+    --workers 1 > "${SERVER_LOG_PATH}" 2>&1
 
-# This part of the script will only be reached if the `exec` command itself fails to launch.
-echo "❌ FATAL: The 'exec' command failed to launch the server. This should not happen." >&2
+# --- [7/7] Fallback Error Message ─────────────────────────────────────────────
+# This final section will only be reached if the `exec` command itself fails.
+echo "❌ FATAL: The 'exec fastapi run' command failed to launch."
+echo "   This indicates a problem with the virtual environment or the 'fastapi' installation."
 exit 1
