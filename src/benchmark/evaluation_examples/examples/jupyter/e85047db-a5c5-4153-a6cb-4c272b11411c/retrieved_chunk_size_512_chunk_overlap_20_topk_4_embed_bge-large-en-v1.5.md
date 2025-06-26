@@ -225,6 +225,3 @@ JupyterLab's current maintainers are listed in alphabetical order, with affiliat
 * Mehmet Bektas, Netflix (general development, extensions).
 * Alex Bozarth, IBM (general development, extensions).
 * Eric Charles, Datalayer, (general development, extensions).
-
-
-

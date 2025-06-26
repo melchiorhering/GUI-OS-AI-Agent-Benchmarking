@@ -59,6 +59,3 @@ showCode | @jupyterlab
 
 Documentation Content:
 Settings
-
-
-

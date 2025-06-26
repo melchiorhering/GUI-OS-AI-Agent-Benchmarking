@@ -105,6 +105,3 @@ serialize* serialize(): ICodeCell[]
 
 NotesThis only serializes the code cells and the prompt cell if it exists, and
 skips any old banner cells.
-
-
-

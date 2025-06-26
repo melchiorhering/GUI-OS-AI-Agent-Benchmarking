@@ -58,6 +58,3 @@ Returns number
 Overrides DataModel.rowCount
 
 * Defined in packages/csvviewer/lib/model.d.ts:58
-
-
-

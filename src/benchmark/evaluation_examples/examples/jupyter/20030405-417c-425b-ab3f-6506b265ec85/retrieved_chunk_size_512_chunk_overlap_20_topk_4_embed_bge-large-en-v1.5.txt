@@ -302,6 +302,3 @@ Down
 show
 Panel
 def
-
-
-

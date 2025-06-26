@@ -41,6 +41,3 @@ df.to_csv('result.csv', index=False)
 6. Click the button "Run" in the menu bar on the top.
 7. In the drop-down menu, select and click "Run All Cells".
 8. Wait for about 10 seconds, the data will be inserted in to "result.csv"
-
-
-

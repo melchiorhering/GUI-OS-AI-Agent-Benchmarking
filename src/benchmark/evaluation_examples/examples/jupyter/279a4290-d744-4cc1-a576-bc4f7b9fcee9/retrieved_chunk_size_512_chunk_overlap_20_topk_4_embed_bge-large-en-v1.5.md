@@ -67,6 +67,3 @@ columnRuleStyle?:string[]| ColumnRuleStyleThe `column-rule-style`CSS property se
 |**50****52****9****12****10**
 |  |
 | 1 *-x-* | 3 *-x-* |
-
-
-

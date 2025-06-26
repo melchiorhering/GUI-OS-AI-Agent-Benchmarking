@@ -39,6 +39,3 @@ CellModel | @jupyterlab
 
 Documentation Content:
 `Optional`options: CellModel.IOptions<ISharedCell>
-
-
-

@@ -88,6 +88,3 @@ If you are using conda:
 	
 	I can reproduce this issue in a clean environment: Go to step 3.
 2. Perhaps the issue is in one of the JupyterLab extensions you had installed. Install any JupyterLab extensions you had one at a time, checking for the issue after each one.
-
-
-

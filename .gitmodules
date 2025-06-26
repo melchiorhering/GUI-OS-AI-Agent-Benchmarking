@@ -6,4 +6,3 @@
 	path = src/docker/vms
 	url = https://huggingface.co/datasets/melchiorhering/vms
 	branch = main
-

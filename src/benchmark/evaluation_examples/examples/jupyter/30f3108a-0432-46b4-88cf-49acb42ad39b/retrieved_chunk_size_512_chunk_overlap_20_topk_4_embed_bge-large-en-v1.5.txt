@@ -306,6 +306,3 @@ Message
 Active
 Notebook
 Pan
-
-
-

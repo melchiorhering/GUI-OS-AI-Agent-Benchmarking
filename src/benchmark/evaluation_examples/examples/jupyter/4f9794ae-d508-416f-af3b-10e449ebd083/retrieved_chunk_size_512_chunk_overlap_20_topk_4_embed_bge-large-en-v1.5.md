@@ -95,6 +95,3 @@ Parameters
 	All markdown cells will be rendered.
 	The last cell in the notebook will be activated and scrolled into view.#### Returns Promise
 * Defined in packages/notebook/lib/actions.d.ts:289
-
-
-

@@ -57,6 +57,3 @@ constructor* new Model(): NotebookTrustStatus.Model
 Inherited from VDomModel.constructor
 Properties
 ----------
-
-
-

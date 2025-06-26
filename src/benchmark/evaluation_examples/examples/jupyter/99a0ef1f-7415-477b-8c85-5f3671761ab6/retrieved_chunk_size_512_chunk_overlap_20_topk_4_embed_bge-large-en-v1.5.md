@@ -57,6 +57,3 @@ Documentation Content:
 `Private`\_totalCells
 
 \_totalCells:any- Defined in packages/notebook/lib/truststatus.d.ts:64
-
-
-
