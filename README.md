@@ -118,7 +118,6 @@ The repository includes Python scripts and notebooks to process the generated `s
 
 This project is licensed under the MIT License. See the [LICENSE](https://opensource.org/license/mit) file for details.
 
-
 ## 📄 Master Thesis Paper
 
 This repository is the official implementation for the paper **"Enhancing Multimodal GUI AI-Agent Benchmarking."** For a detailed explanation of the methodology, experimental setup, and results, please refer to the paper.
