@@ -2,7 +2,7 @@ import argparse
 import os
 from pathlib import Path
 
-import yaml  # You will need to install pyyaml: uv pip install pyyaml
+import yaml
 from smolagents import LiteLLMModel
 
 from src.agent import get_orchestrator_logger
