@@ -73,6 +73,6 @@ jobs:
         uses: googleapis/release-please-action@v4
         with:
           # Using a PAT is more robust for triggering other workflows if needed
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.HERING_GITHUB_APP }}
           # This should be 'python' if you are using hatch-vcs as discussed
           release-type: simple
