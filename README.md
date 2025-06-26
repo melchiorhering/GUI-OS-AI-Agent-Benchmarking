@@ -1,6 +1,6 @@
 # Enhancing Multimodal GUI AI-Agent Benchmarking
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/melchiorhering/Automating-DS-DE-Workflows/blob/main/LICENSE) [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/) [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![Jupyter](https://img.shields.io/badge/Jupyter-F37626?logo=jupyter&logoColor=white)](https://jupyter.org/) [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Spaces-yellow)](https://huggingface.co/datasets/melchiorhering/vms)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/melchiorhering/Automating-DS-DE-Workflows/blob/main/LICENSE) [![Python 3.12+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/) [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/) [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![Jupyter](https://img.shields.io/badge/Jupyter-F37626?logo=jupyter&logoColor=white)](https://jupyter.org/) [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Spaces-yellow)](https://huggingface.co/datasets/melchiorhering/vms)
 
 This repository contains the source code and experimental setup for **"Enhancing Multimodal GUI AI-Agent Benchmarking,"** a modular, code-centric framework designed to improve upon the foundation of the [Spider2-V benchmark](https://spider2-v.github.io/).
 
@@ -117,3 +117,10 @@ The repository includes Python scripts and notebooks to process the generated `s
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](https://opensource.org/license/mit) file for details.
+
+
+## 📄 Paper
+
+This repository is the official implementation for the paper **"Enhancing Multimodal GUI AI-Agent Benchmarking."** For a detailed explanation of the methodology, experimental setup, and results, please refer to our full paper.
+
+[**➡️ Read the full paper here (PDF)**](./paper.pdf)
