@@ -1,129 +1,102 @@
 # Evaluation Examples
 
-This directory contains task definitions and helper data for evaluating sandboxed AI agents. Below is an explanation of its structure and the updated JSON task format.
+This directory contains task definitions, dependencies, and evaluation configurations for benchmarking multimodal AI agents within the framework. Below is an explanation of its structure and the standardized JSON task format.
 
----
+-----
 
-## Directory Overview
+## 📂 Directory Structure
 
-- `documents/` – Preprocessed documentation for retrieval-augmented tasks.
-- `examples/` – Task examples for different tools and applications.
-- `settings/` – Credentials or environment configs required for account-based tasks.
+  - `examples/` – The core directory containing all task definitions, organized by the primary tool used. The structure is `examples/<tool_name>/<task_uuid>/`.
 
----
+-----
 
-## Task Format (Flowbook Style)
+## 📝 Task Specification Format
 
-Each task lives in a subdirectory of `examples/<tool>/<uuid>/`. The core configuration is a JSON file named `<uuid>.json`. Here's an example adapted for a **Jupyter** task:
+Each task is fully defined by a JSON file named `<uuid>.json` located within its own directory. This file contains all the metadata, instructions, and configurations needed to set up and evaluate an agent on that task.
+
+A full example (`1fe7d03d-d0d5-465b-987d-4583af499387.json`)
 
 ```json
 {
-  "id": "00b43a0a-b17b-475d-a482-302efe94d4cc",
+  "id": "1fe7d03d-d0d5-465b-987d-4583af499387",
   "snapshot": "jupyter",
-  "instruction": "...",
-  "source": ["https://www.kaggle.com/datasets/..."],
-  "related_apps": ["jupyter"],
-  "tags": ["cli+gui", "traditional_data_processing", "verbose"],
-  "action_number": 7,
+  "instruction": "Help me tune the AdaBoost Classifier in a VS Code notebook to achieve a 1.0 accuracy score on the famous Iris Dataset. Add codes only to the existing cells, and in the end run all the cells and save the jupyter notebook.\nHere is a step-by-step tutorial from an expert instructing you how to complete it:\nThis task requires you to tune the AdaBoost classifier to achieve a 1.0 accuracy. Follow the steps:\n1. First, locate the correct code cell to edit. Scroll through the notebook to find the section marked with the header **\"Building the AdaBoost Model\"**.\n2. In the code cell immediately following that header, find the line where the `AdaBoostClassifier` is defined. It will look similar to `abc = AdaBoostClassifier(n_estimators=1, learning_rate=0.1)`.\n3. Modify the hyperparameters in that line. Change the value of `n_estimators` from `1` to `40`.\n4. In the same line, change the value of `learning_rate` from `0.1` to `0.8`. The updated line should now be: `abc = AdaBoostClassifier(n_estimators=40, learning_rate=0.8)`.\n5. After editing the code, execute the entire notebook to apply the changes and see the new accuracy. To do this, click the **\"Run All\"** icon (looks like a double play symbol) in the notebook's top toolbar.\n6. Wait for all the cells to finish running. The output of the final cell will now display an \"Accuracy score\" of `1.0`.\n7. Finally, save the updated notebook by pressing the keyboard shortcut `Ctrl+S`.\nYou can follow the detailed GUI plan above using `pyautogui` or proactively tackle the task using Python code",
+  "source": [
+    "https://www.datacamp.com/tutorial/adaboost-classifier-python"
+  ],
+  "related_apps": [
+    "vscode",
+    "jupyter"
+  ],
+  "tags": [
+    "cli+gui",
+    "traditional_data_processing",
+    "verbose"
+  ],
+  "action_number": 6,
   "config": [
     {
       "func": "upload_file_to_vm",
       "arguments": {
-        "local_path": "Athletes_summer_games.csv",
-        "remote_path": "/home/user/Desktop/Athletes_summer_games.csv"
+        "local_path": "AdaBoost.ipynb",
+        "remote_path": "/home/user/Desktop/AdaBoost.ipynb"
       }
     },
-    ...
+    {
+      "func": "upload_script_and_execute",
+      "arguments": {
+        "local_path": "init.sh",
+        "remote_path": "/home/user/init.sh"
+      }
+    }
   ],
   "evaluation": {
-    "func": "compare_csv",
+    "func": "compare_notebook_outputs",
     "arguments": {
-      "local_expected": "gold.csv",
-      "vm_result": "/home/user/Desktop/allGames.csv"
+      "local_expected": "AdaBoost_gold.ipynb",
+      "vm_result": "/home/user/Desktop/AdaBoost.ipynb"
     }
   },
-  "counterpart": "cad93c85-d12d-4ba3-83d7-ba4e3ec3bfcc"
+  "counterpart": "e1da7d3d-2830-4376-a994-36cf53852303"
 }
 ```
 
----
+</details>
 
-### 🔑 Key Fields
+### 🔑 Key Fields Explained
 
-- `id`: Globally unique identifier for the task.
-- `snapshot`: Target application (e.g., `"jupyter"`, `"bigquery"`).
-- `instruction`: Goal description or step-by-step guide.
-- `source`: URLs from which the example was derived.
-- `related_apps`: List of tools used (see full list below).
-- `tags`: Labels describing the nature of the task:
+  - **`id`**: A globally unique identifier (UUID) for the task.
+  - **`instruction`**: The main prompt given to the agent. It describes the goal and can include a detailed step-by-step tutorial for the agent to follow.
+  - **`config`**: A list of setup functions to run before the agent begins the task. Each function prepares the sandbox environment (e.g., uploading files, installing packages).
+  - **`evaluation`**: The post-task evaluation metric. It defines the function used to check the agent's work against a ground-truth and assign a score.
+  - **`action_number`**: The expected number of steps for a successful run, which can be used to set the `max_steps` limit for the agent.
+  - **`tags`**: Descriptive labels used for filtering and analysis. Common tags include interface type (`cli`, `gui`, `cli+gui`), guidance style (`verbose`, `abstract`), and task domain (`data_warehousing`, etc.).
+  - **`related_apps`**: A list of the primary software applications involved in the task.
+  - **`source`**: A list of URLs or references indicating where the task was originally derived from.
+  - **`counterpart`**: The ID of the corresponding task with an alternate instruction style (e.g., the `abstract` version of a `verbose` task).
 
-  - **Interface**: `cli`, `gui`, or `cli+gui`
-  - **Guidance**: `verbose` (step-by-step) or `abstract` (goal only)
-  - **Domain**: one of the 7 pipeline stages (e.g. `data_warehousing`, `traditional_data_processing`)
-  - **Account Requirement**: `account` if credentials are needed
+-----
 
-- `action_number`: Number of agent steps expected in a successful execution.
-- `config`: Setup functions to prepare the environment. Each entry includes:
+## ⚙️ How It Works: `config` and `evaluation`
 
-  - `func`: Name of the Python function to run (looked up via `CONFIG_DISPATCH`)
-  - `arguments`: Keyword arguments passed to the function. Paths are usually resolved relative to the task folder.
+The `config` and `evaluation` blocks use a dynamic dispatch system to run helper functions.
 
-- `evaluation`: Post-task metric. Includes:
+  - `"func"`: The name of a Python function located in `benchmark/helpers/config/` or `benchmark/helpers/evaluators/`.
+  - `"arguments"`: A dictionary of keyword arguments that get passed directly to that function.
 
-  - `func`: Evaluation function name (from `EVAL_DISPATCH`)
-  - `arguments`: Arguments passed to the evaluation function. These often include paths to files produced by the agent and reference files.
+This design allows for creating new, reusable setup and evaluation logic without changing the core orchestrator code.
 
-- `counterpart`: ID of the same task but with an alternate instruction style (abstract vs. verbose).
+-----
 
----
+## 📊 Task Output: `summary.json`
 
-### 🔁 Function Dispatching
+After each task run, the framework generates a `summary.json` file in the corresponding `results/` directory. This file is a complete record of the task and its outcome. It contains:
 
-- `config` steps are handled by Python functions in `benchmark.helpers.config.*`.
-- `evaluation` is handled by functions in `benchmark.helpers.evaluators.*`.
+1.  All the original fields from the input `<uuid>.json` file.
+2.  A `results` object, which is populated with the `TaskOutput` data, including:
+      - The final `score` and any `eval_error`.
+      - The agent's final `state` (e.g., `success`, `max_steps_error`).
+      - A complete history of all `messages` between the agent and the system.
+      - `total_tokens` and `total_timing` for the run.
 
-Both are dynamically called with:
-
-```python
-func(task=TaskSpec, agent=SandboxCodeAgent, **arguments)
-```
-
-This allows each helper function to access all metadata, logs, file paths, and VM handles needed for setup or scoring.
-
----
-
-## Supported Applications (`related_apps`)
-
-Supported apps include (not exhaustive):
-
-```text
-'airflow', 'dagster', 'snowflake', 'duckdb', 'bigquery', 'jupyter',
-'dbt', 'mysql', 'servicenow', 'terminal', 'metabase', 'airbyte',
-'docker', 'hasura_cloud', 'sqlite3', 'vscode', 'chromium',
-'postgresql', 'superset', 'dbt_cloud', 'excel'
-```
-
----
-
-## Account Configuration
-
-If a task requires login (see `tags` → `account`), credentials must be filled in under:
-
-```
-evaluation_examples/settings/<vendor>/<settings>.json
-```
-
-For example:
-
-```bash
-evaluation_examples/settings/google/settings.json
-evaluation_examples/settings/snowflake/account.json
-```
-
-See [Account Guideline](../ACCOUNT_GUIDELINE.md) for setup instructions.
-
----
-
-## Visualization and Analysis
-
-We include scripts to evaluate scores, analyze top-performing tools, visualize task durations, and profile failures. Outputs can include CSV summaries and annotated screenshots for step-wise inspection.
+This structured output makes it easy to perform the detailed analysis shown in the main paper.
