@@ -101,7 +101,7 @@ The main entry point for running experiments is the orchestrator script. You can
 ```bash
 cd src
 
-# Example: Run all tasks defined in the jupyter test index sequentially
+# Example: Run all tasks defined in the index file
 uv run cli.py \
     --task-index /path/to/your/task_list.json \
     --tasks-root /path/to/your/task_definitions/ \
