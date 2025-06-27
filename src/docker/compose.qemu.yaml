@@ -8,9 +8,12 @@ services:
 
     # Mount the qcow2 we built earlier as /boot.qcow2 (overrides BOOT)
     volumes:
+      # FIRST INSTALL
       # - ${ROOT_DIR}/src/docker/vms/ubuntu-base/boot.iso:/boot.iso # when you have a local image file
-      # - ${ROOT_DIR}/src/docker/vms/ubuntu-base-snap1.qcow2:/boot.qcow2 # For using snapshots
-      - ${ROOT_DIR}/src/docker/vms/ubuntu-base/storage:/storage # Setting the storage directory
+      # - ${ROOT_DIR}/src/docker/vms/ubuntu-base/storage:/storage # Setting the storage directory
+
+      # WHEN INSTALLED
+      - ${ROOT_DIR}/src/docker/vms/ubuntu-base/storage/data.img:/boot.img # When image has been created use this to startup the VM.
       - ${ROOT_DIR}/src/docker/shared:/shared # Shared directory for the VM; in the container you have to mount `mount -t 9p -o trans=virtio shared /mnt/container`
 
     # Grant KVM + networking devices
