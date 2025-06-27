@@ -138,7 +138,7 @@ If you want to skip the OS installation, you can download a pre-built base image
 
 ```yaml
 # Global VM resource settings
-# Configuration can be found here: [https://github.com/qemus/qemu](https://github.com/qemus/qemu)
+# Configuration can be found here: https://github.com/qemus/qemu
 # THIS DOCKER COMPOSE FILE IS USED FOR SETTING UP THE BASE VM ENVIRONMENT
 services:
   ubuntu-base:
@@ -147,11 +147,13 @@ services:
 
     # Mount the qcow2 we built earlier as /boot.qcow2 (overrides BOOT)
     volumes:
-      # - ${ROOT_DIR}/src/docker/vms/ubuntu-base-snap1.qcow2:/boot.qcow2 # For using snapshots
-      - ${ROOT_DIR}/src/docker/vms/ubuntu-base/boot.iso:/boot.iso
-      - ${ROOT_DIR}/src/docker/vms/ubuntu-base/storage:/storage # Setting the storage directory
-      - ${ROOT_DIR}/src/docker/shared/ubuntu-base:/shared # Shared directory for the VM; in the container you have to mount `mount -t 9p -o trans=virtio shared /mnt/container`
-      # - ${ROOT_DIR}/src/docker/vms/ubuntu-base/data.img:/boot.img # When image is created use this to start the image
+      # FIRST INSTALL
+      # - ${ROOT_DIR}/src/docker/vms/ubuntu-base/boot.iso:/boot.iso # when you have a local image file
+      # - ${ROOT_DIR}/src/docker/vms/ubuntu-base/storage:/storage # Setting the storage directory
+
+      # WHEN INSTALLED
+      - ${ROOT_DIR}/src/docker/vms/ubuntu-base/storage/data.img:/boot.img # When image has been created use this to startup the VM.
+      - ${ROOT_DIR}/src/docker/shared:/shared # Shared directory for the VM; in the container you have to mount `mount -t 9p -o trans=virtio shared /mnt/container`
 
     # Grant KVM + networking devices
     devices:
@@ -162,8 +164,8 @@ services:
 
     # Runtime tweaks
     environment:
-      # BOOT: "[https://releases.ubuntu.com/jammy/ubuntu-22.04.5-desktop-amd64.iso](https://releases.ubuntu.com/jammy/ubuntu-22.04.5-desktop-amd64.iso)" downloads and install a new iso image
-      # BOOT: "ubuntu" # SET THIS ONCE FOR THE FIRST CONTAINER BUILD/RUN  (THIS DOWNLOADS THE LATEST ISO)
+      # BOOT: "https://releases.ubuntu.com/jammy/ubuntu-22.04.5-desktop-amd64.iso" downloads and install a new iso image
+      BOOT: "ubuntu" # SET THIS ONCE FOR THE FIRST CONTAINER BUILD/RUN  (THIS DOWNLOADS THE LATEST ISO)
       RAM_SIZE: "4G" # ↑ RAM (default 2G)
       CPU_CORES: "4" # ↑ vCPUs (default 2)
       DISK_SIZE: "25g" # Set this to resize the disk
@@ -172,7 +174,7 @@ services:
 
     ports:
       - 8006:8006 # Web console (noVNC)
-      - 2222:22 # SSH from host → guest
+      - 2222:22   # SSH from host → guest
       - 8888:8888 # Jupyter Kernel Gateway
       - 8765:8765 # FastAPI Observation server
 
