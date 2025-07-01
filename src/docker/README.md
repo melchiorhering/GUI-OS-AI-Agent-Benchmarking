@@ -54,7 +54,7 @@ The `qemux/qemu` image includes all necessary QEMU and OVMF components, so no ex
 
 You have two options to get your VM running. Building from scratch is recommended for a clean, customized environment.
 
-### Option A: Build From Scratch (Recommended)
+### Option A: Build From Scratch
 
 This path guides you through installing a fresh Ubuntu OS.
 
