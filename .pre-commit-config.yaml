@@ -6,14 +6,14 @@ default_install_hook_types:
 repos:
   - repo: https://github.com/astral-sh/uv-pre-commit
       # uv version.
-    rev: 0.8.3
+    rev: 0.8.22
     hooks:
       - id: uv-sync
     #   - id: uv-export # outputs requirement.txt
 
   # Standard pre-commit hooks for general file health.
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         # Exclude markdown files from trailing whitespace checks as some formatting
@@ -26,7 +26,7 @@ repos:
 
   # Ruff, for lightning-fast linting and formatting, installed with uv.
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.5
+    rev: v0.13.2
     hooks:
       # Run the linter.
       - id: ruff-check
@@ -36,7 +36,7 @@ repos:
 
   # Pyright for static type checking, installed with uv.
   - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.403
+    rev: v1.1.405
     hooks:
       - id: pyright
 
@@ -52,7 +52,7 @@ repos:
 
   # Commitizen-tools
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.8.3 # Replace with latest tag
+    rev: v4.9.1 # Replace with latest tag
     hooks:
       - id: commitizen
       - id: commitizen-branch
