@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0](https://github.com/melchiorhering/GUI-OS-AI-Agent-Benchmarking/compare/v1.0.1...v1.1.0) (2025-12-10)
+
+
+### Features
+
+* updating ([d1023c5](https://github.com/melchiorhering/GUI-OS-AI-Agent-Benchmarking/commit/d1023c572cabdd5981ce2175f1f9fca791a1fbac))
+* updating ([c84dc7e](https://github.com/melchiorhering/GUI-OS-AI-Agent-Benchmarking/commit/c84dc7e24863319bd8b368edf39f614c6a8cb6cd))
+
 ## [1.0.1](https://github.com/melchiorhering/Automating-DS-DE-Workflows/compare/v1.0.0...v1.0.1) (2025-06-26)
 
 
