@@ -4,13 +4,13 @@ import shutil
 import time
 from typing import Optional, Union, cast
 
-from smolagents import AgentLogger, LogLevel
-
-import docker
 from docker.client import DockerClient
 from docker.errors import ImageNotFound, NotFound
 from docker.models.containers import Container
 from docker.types import Mount
+from smolagents import AgentLogger, LogLevel
+
+import docker
 
 from .configs import SandboxVMConfig, VMConfig
 from .errors import VMCreationError
