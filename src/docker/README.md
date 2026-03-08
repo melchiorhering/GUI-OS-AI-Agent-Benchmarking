@@ -39,16 +39,16 @@ _Build once with QEMU/KVM, run anywhere with the **`qemux/qemu`** Docker image._
 
 ## 1 · Host Prerequisites
 
-| Role                | Required packages / actions                    |
-| :------------------ | :--------------------------------------------- |
+| Role                  | Required packages / actions                    |
+| :-------------------- | :--------------------------------------------- |
 | **Builder & Runtime** | Docker Engine, Docker Compose                  |
-|                     | Add your user to the `docker` and `kvm` groups |
+|                       | Add your user to the `docker` and `kvm` groups |
 
-***Verify Hardware Virtualization:** Run `kvm-ok` (on Ubuntu) or `cat /proc/cpuinfo | grep -E "vmx|svm"`. If your host is itself a VM, you must enable **nested VT-x/AMD-V** in your hypervisor settings.*
+**\*Verify Hardware Virtualization:** Run `kvm-ok` (on Ubuntu) or `cat /proc/cpuinfo | grep -E "vmx|svm"`. If your host is itself a VM, you must enable **nested VT-x/AMD-V** in your hypervisor settings.\*
 
 The `qemux/qemu` image includes all necessary QEMU and OVMF components, so no extra QEMU packages are needed on the host.
 
------
+---
 
 ## 2 · Getting Started
 
@@ -124,7 +124,7 @@ If you want to skip the OS installation, you can download a pre-built base image
     # Change directory to the submodule
     cd src/docker/vms
     # Pull the latest variant
-    git pull origin main
+    git pull origin w
     ```
 2.  **Configure `compose.qemu.yaml`** to boot directly from the downloaded `data.img` as shown in **Step 3** of "Option A" above.
 3.  **Start the container:**
@@ -132,9 +132,9 @@ If you want to skip the OS installation, you can download a pre-built base image
     docker compose -f compose.qemu.yaml up -d
     ```
 
------
+---
 
-*The `compose.qemu.yaml` file remains below for reference.*
+_The `compose.qemu.yaml` file remains below for reference._
 
 ```yaml
 # Global VM resource settings
@@ -174,13 +174,14 @@ services:
 
     ports:
       - 8006:8006 # Web console (noVNC)
-      - 2222:22   # SSH from host → guest
+      - 2222:22 # SSH from host → guest
       - 8888:8888 # Jupyter Kernel Gateway
       - 8765:8765 # FastAPI Observation server
 
     restart: unless-stopped
     stop_grace_period: 2m
 ```
+
 ## 4 · Setting Up the OS
 
 After the initial Ubuntu installation is complete, the next phase involves configuring the operating system, installing development tools, and setting up your application servers. This process begins with establishing SSH access.
@@ -190,19 +191,20 @@ After the initial Ubuntu installation is complete, the next phase involves confi
 For the very first boot after installation, you must use the web-based noVNC console to get inside the VM and install the SSH server. This is a one-time setup step.
 
 1.  **Start the VM without the `BOOT` variable**.
-    * In your `compose.qemu.yaml`, make sure to comment out the `boot.iso` line and uncomment the `data.img` line to boot from your newly installed system:
-        ```diff
-        - # - ${ROOT_DIR}/src/docker/vms/ubuntu-base/boot.iso:/boot.iso
-        + - ${ROOT_DIR}/src/docker/vms/ubuntu-base/data.img:/boot.img
-        ```
-    * Then, start the container:
-        ```bash
-        docker compose -f compose.qemu.yaml up -d
-        ```
+    - In your `compose.qemu.yaml`, make sure to comment out the `boot.iso` line and uncomment the `data.img` line to boot from your newly installed system:
+      ```diff
+      - # - ${ROOT_DIR}/src/docker/vms/ubuntu-base/boot.iso:/boot.iso
+      + - ${ROOT_DIR}/src/docker/vms/ubuntu-base/data.img:/boot.img
+      ```
+    - Then, start the container:
+      ```bash
+      docker compose -f compose.qemu.yaml up -d
+      ```
 
 2.  **Log in via noVNC.** Open **`http://localhost:8006`** and log in to the Ubuntu desktop using the user account you created during installation.
 
 3.  **Install and Enable OpenSSH Server.** Open a terminal inside the VM (from the desktop) and run the following commands to install the SSH server and ensure it starts automatically on boot:
+
     ```bash
     # Update package list
     sudo apt update
@@ -228,6 +230,7 @@ For the very first boot after installation, you must use the web-based noVNC con
 Now that SSH is working, you can copy the provisioning scripts from your host machine to the VM and execute them.
 
 1.  **Copy the scripts to the VM.** Open a new terminal on your **host machine** and use `scp` to transfer the files.
+
     ```bash
     # From your host machine (ensure you are in the project's 'docker' directory)
     scp -P 2222 ./1-os-configuration.sh user@localhost:/home/user/
@@ -236,30 +239,35 @@ Now that SSH is working, you can copy the provisioning scripts from your host ma
     scp -P 2222 ./4-jupyter-kernel-gateway.sh user@localhost:/home/user/
     scp -P 2222 ./5-fastapi-observation-server.sh user@localhost:/home/user/
     ```
-    *(Note: If you encounter "connection refused," double-check that the VM is running and that you completed step 4.1 successfully.)*
+
+    _(Note: If you encounter "connection refused," double-check that the VM is running and that you completed step 4.1 successfully.)_
 
 2.  **Connect to the VM via SSH.**
+
     ```bash
     ssh user@localhost -p 2222
     ```
 
 3.  **Make the scripts executable inside the VM.**
+
     ```bash
     # Inside the VM guest (via SSH)
     chmod +x /home/user/*.sh
     ```
 
 4.  **Run the OS Configuration Script.** This script handles system updates, essential package installation, passwordless sudo setup, and SSH server configuration.
+
     ```bash
     # Inside the VM guest
     sudo /home/user/1-os-configuration.sh
     ```
+
     This script will:
-    * Perform `apt update` and `dist-upgrade`.
-    * Install core packages like `openssh-server`, `curl`, `wget`, `git`, `htop`, `net-tools`, `build-essential`, `gnome-screenshot`, and Python development packages for GUI automation (`python3-tk`, `python3-dev`, `scrot`).
-    * Configure passwordless `sudo` for the `user` account via a `sudoers.d` drop-in file.
-    * Set up the SSH daemon with a minimal configuration (Port 22, Password Authentication enabled, Pubkey Authentication disabled) in `/etc/ssh/sshd_config.d/10-sandbox.conf` and enable `sshd` to start at boot.
-    * **Create and enable the `jupyter-kg.service` and `observation-server.service` systemd unit files** in `/etc/systemd/system/` to ensure Jupyter Kernel Gateway and the FastAPI Observation Server start automatically at boot.
+    - Perform `apt update` and `dist-upgrade`.
+    - Install core packages like `openssh-server`, `curl`, `wget`, `git`, `htop`, `net-tools`, `build-essential`, `gnome-screenshot`, and Python development packages for GUI automation (`python3-tk`, `python3-dev`, `scrot`).
+    - Configure passwordless `sudo` for the `user` account via a `sudoers.d` drop-in file.
+    - Set up the SSH daemon with a minimal configuration (Port 22, Password Authentication enabled, Pubkey Authentication disabled) in `/etc/ssh/sshd_config.d/10-sandbox.conf` and enable `sshd` to start at boot.
+    - **Create and enable the `jupyter-kg.service` and `observation-server.service` systemd unit files** in `/etc/systemd/system/` to ensure Jupyter Kernel Gateway and the FastAPI Observation Server start automatically at boot.
 
 5.  **Run the Python Environment Script.** This will set up the Python virtual environment and install all necessary packages.
     ```bash
@@ -267,10 +275,10 @@ Now that SSH is working, you can copy the provisioning scripts from your host ma
     /home/user/2-python-configuration.sh
     ```
     This script will:
-    * Install `uv`, a fast Python package installer.
-    * Create a Python virtual environment at `~/Desktop/.action-env` using Python 3.11.
-    * Install core Python packages including `jupyter_kernel_gateway`, `fastapi`, `uvicorn`, `pyautogui`, `requests`, `numpy`, `pandas`, `ipywidgets`, `smolagents`, `ipykernel`, `opencv-python`, `torch`, `Pillow`, and `pynput`.
-    * Verify the Jupyter kernelspec list.
+    - Install `uv`, a fast Python package installer.
+    - Create a Python virtual environment at `~/Desktop/.action-env` using Python 3.11.
+    - Install core Python packages including `jupyter_kernel_gateway`, `fastapi`, `uvicorn`, `pyautogui`, `requests`, `numpy`, `pandas`, `ipywidgets`, `smolagents`, `ipykernel`, `opencv-python`, `torch`, `Pillow`, and `pynput`.
+    - Verify the Jupyter kernelspec list.
 
 ### 4.3 · Deploy the Observation Server Code
 
@@ -304,17 +312,17 @@ These steps are essential for tools like `pyautogui` to function correctly. You 
 
 Most GUI automation tools require the Xorg (X11) display server. Ubuntu's default, Wayland, is often incompatible.
 
-  - On the graphical login screen, click the gear icon (⚙️) in the bottom-right corner and select **"Ubuntu on Xorg"** before entering your password.
-  - To make this change permanent:
-    1.  Edit the GDM3 configuration file:
-        ```bash
-        sudo nano /etc/gdm3/custom.conf
-        ```
-    2.  Uncomment the line `#WaylandEnable=false` by removing the `#`.
-    3.  Save the file (`Ctrl+O`), exit (`Ctrl+X`), and restart the display manager:
-        ```bash
-        sudo systemctl restart gdm3
-        ```
+- On the graphical login screen, click the gear icon (⚙️) in the bottom-right corner and select **"Ubuntu on Xorg"** before entering your password.
+- To make this change permanent:
+  1.  Edit the GDM3 configuration file:
+      ```bash
+      sudo nano /etc/gdm3/custom.conf
+      ```
+  2.  Uncomment the line `#WaylandEnable=false` by removing the `#`.
+  3.  Save the file (`Ctrl+O`), exit (`Ctrl+X`), and restart the display manager:
+      ```bash
+      sudo systemctl restart gdm3
+      ```
 
 > ### **Critical Fix for X11 Black Screen Bug**
 >
@@ -328,7 +336,6 @@ Most GUI automation tools require the Xorg (X11) display server. Ubuntu's defaul
 > # Comment out the following line by adding a '#' at the beginning:
 > # session optional pam_lastlog.so
 > ```
-
 
 #### 2. Verify the `XAUTHORITY` Path
 
@@ -371,7 +378,7 @@ journalctl -u observation-server.service -f
 
 You can also find persistent log files in `~/.local/share/jupyter-kg-logs/` and `~/.local/share/fastapi-observation-logs/`.
 
------
+---
 
 ## 7 · Post-Configuration Application Installation
 
@@ -398,19 +405,19 @@ sudo snap install libreoffice
 sudo snap install chromium
 ```
 
------
+---
 
 ## 8 · Software Summary
 
 Here is a recap of the key packages installed by the provisioning scripts.
 
-| Category       | Packages                                          |
+| Category       | Packages                                            |
 | :------------- | :-------------------------------------------------- |
 | Dev Tools      | `build-essential`, `git`, `curl`, `wget`, `uv`      |
 | GUI Automation | `gnome-screenshot`, `pyautogui`, `pynput`, `Pillow` |
 | Network / Misc | `openssh-server`, `net-tools`, `htop`               |
 
------
+---
 
 ## 9 · Developing Inside the VM with VS Code
 
@@ -421,18 +428,18 @@ The most efficient way to work inside the VM is with VS Code's Remote-SSH extens
 3.  Enter the connection details: `user@localhost:2222`.
 4.  VS Code will connect, install its server components in the VM, and open a new window.
 
-You are now effectively using VS Code from *within* the VM, with direct access to its terminal, filesystem, and applications.
+You are now effectively using VS Code from _within_ the VM, with direct access to its terminal, filesystem, and applications.
 
------
+---
 
 ## 🚀 Conclusion
 
 You now have a **portable, reproducible Ubuntu VM** running under Docker/KVM, with:
 
-  - One-file cloning and backup (`data.img`)
-  - Password-based SSH and passwordless `sudo` for easy access
-  - A stable X11 environment for robust GUI automation
-  - Seamless development via VS Code Remote-SSH
-  - **Jupyter Kernel Gateway and a FastAPI Observation Server, both starting automatically on boot\!**
+- One-file cloning and backup (`data.img`)
+- Password-based SSH and passwordless `sudo` for easy access
+- A stable X11 environment for robust GUI automation
+- Seamless development via VS Code Remote-SSH
+- **Jupyter Kernel Gateway and a FastAPI Observation Server, both starting automatically on boot\!**
 
 Happy hacking\! 🎉

@@ -1,6 +1,6 @@
-[submodule "overleaf"]
-	path = overleaf
-	url = https://git@git.overleaf.com/6705303b2d103c1e10f778c4
+# [submodule "overleaf"]
+# 	path = overleaf
+# 	url = https://git@git.overleaf.com/6705303b2d103c1e10f778c4
 
 [submodule "src/docker/vms"]
 	path = src/docker/vms
