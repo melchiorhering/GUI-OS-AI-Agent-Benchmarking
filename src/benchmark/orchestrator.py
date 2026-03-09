@@ -5,20 +5,19 @@ from typing import Any, Callable, Dict
 
 from smolagents import LiteLLMModel, LogLevel
 
-from agent import (
+from src.agent import (
     SandboxAgentLogger,
     SandboxCodeAgent,
     observation_screenshot_callback,
 )
-from benchmark.tasks import (
+from src.benchmark.tasks import (
     CONFIG_DISPATCH,
     EVAL_DISPATCH,
     TaskInput,
     TaskOutput,
 )
-from sandbox import SandboxVMConfig
-
-from .utils import Timeout, _get_divider, _save_error_log
+from src.benchmark.utils import Timeout, _get_divider, _save_error_log
+from src.sandbox import SandboxVMConfig
 
 
 class Orchestrator:
