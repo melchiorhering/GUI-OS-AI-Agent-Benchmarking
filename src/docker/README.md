@@ -124,7 +124,7 @@ If you want to skip the OS installation, you can download a pre-built base image
     # Change directory to the submodule
     cd src/docker/vms
     # Pull the latest variant
-    git pull origin w
+    git pull origin main
     ```
 2.  **Configure `compose.qemu.yaml`** to boot directly from the downloaded `data.img` as shown in **Step 3** of "Option A" above.
 3.  **Start the container:**
