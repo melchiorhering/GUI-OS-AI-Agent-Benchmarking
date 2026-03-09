@@ -70,7 +70,7 @@ class SandboxClient:
 class SandboxVMManager(VMManager):
     """Specialized VMManager that wires FastAPI inside the guest."""
 
-    # FIX 2: Add a class-level type annotation for `cfg`.
+    # Add a class-level type annotation for `cfg`.
     # This tells Pylance that in this subclass, `self.cfg` is always the
     # more specific SandboxVMConfig, resolving the attribute access errors.
     cfg: SandboxVMConfig

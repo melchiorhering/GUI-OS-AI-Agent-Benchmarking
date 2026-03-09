@@ -20,6 +20,7 @@ class SandboxCodeAgent(CodeAgent):
             # Now it's safe to access the .vm attribute
             self.ssh: SSHClient = self.python_executor.vm.ssh
             self.sandbox_client: SandboxClient = self.python_executor.vm.sandbox_client
+            self.sandbox_client.start_recording()
 
     def create_python_executor(self) -> SandboxExecutor | PythonExecutor:
         if self.executor_type == "sandbox":
@@ -40,6 +41,8 @@ class SandboxCodeAgent(CodeAgent):
             # This is more robust than hasattr because it checks for the class type.
             if isinstance(self.python_executor, SandboxExecutor):
                 # Pylance now knows that .cleanup() exists on this object.
+                self.sandbox_client.stop_recording()
                 self.python_executor.cleanup()
+
         except Exception as e:
             self.logger.log_error(f"⚠️ CodeAgent cleanup failed: {e}")

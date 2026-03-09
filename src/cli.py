@@ -13,7 +13,7 @@ from src.benchmark.utils import generate_port_pool
 PORT_KEYS = ["ssh", "vnc", "fastapi", "jupyter"]
 START_PORT = 60000
 DEFAULT_PROMPT_FILE = Path("prompts/task.yaml")
-DEFAULT_TASK_INDEX_PATH = Path("benchmark/evaluation_examples/test_one.json")
+DEFAULT_TASK_INDEX_PATH = Path("benchmark/evaluation_examples/test_five.json")
 DEFAULT_TASKS_ROOT_DIR = Path("benchmark/evaluation_examples/examples")
 DEFAULT_RESULTS_ROOT_DIR = Path("results")
 TASK_TIMEOUT_SECONDS = 12 * 60
