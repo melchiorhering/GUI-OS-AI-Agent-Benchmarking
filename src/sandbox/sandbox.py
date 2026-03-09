@@ -81,9 +81,14 @@ class SandboxVMManager(VMManager):
         logger: Optional[AgentLogger] = None,
         preserve_on_exit: bool = False,
         **kwargs,
-    ):
-        if not isinstance(config, SandboxVMConfig):
-            raise TypeError("SandboxVMManager requires SandboxVMConfig")
+    ) -> None:
+        # Use hasattr to check for a Sandbox-specific attribute instead of strict isinstance
+        if not hasattr(config, "host_sandbox_fastapi_server_port"):
+            raise TypeError(
+                f"SandboxVMManager requires SandboxVMConfig (or compatible object). "
+                f"Got: {type(config).__name__} from {type(config).__module__}"
+            )
+
         super().__init__(config=config, logger=logger, **kwargs)
 
         self.container = self.container  # To satisfy linter if it complains about unused attribute

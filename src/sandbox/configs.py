@@ -110,7 +110,7 @@ class SandboxVMConfig(VMConfig):
     def __post_init__(self):
         super().__post_init__()  # Critical to call this first
 
-        # FIX: To prevent overwrites, first, we create a new dictionary with
+        # To prevent overwrites, first, we create a new dictionary with
         # the user-defined additional ports. Then, we merge the essential ports
         # into it, ensuring they overwrite any conflicting keys from additional_ports.
 

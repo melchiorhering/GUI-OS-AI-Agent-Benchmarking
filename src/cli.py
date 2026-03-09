@@ -55,7 +55,7 @@ def main():
     model_group.add_argument(
         "--model-id",
         type=str,
-        default="openai/gpt-4o-mini",
+        default="openrouter/qwen/qwen3.5-35b-a3b",
         help="Model ID (e.g., 'anthropic/claude-3-5-sonnet' or 'openrouter/qwen/qwen2.5-72b-instruct').",
     )
     model_group.add_argument(
